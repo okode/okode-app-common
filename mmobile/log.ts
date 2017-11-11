@@ -1,5 +1,5 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { MMobile } from './mmobile-service';
+import { MMobile } from './mmobile';
 
 @Injectable()
 export class Log {

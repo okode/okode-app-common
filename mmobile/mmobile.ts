@@ -6,7 +6,7 @@ import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
-export class MMobileService {
+export class MMobile {
 
   private baseUrl: string;
   private appName: string;
@@ -38,10 +38,10 @@ export class MMobileService {
           this.config = result;
           this.storage.ready()
             .then(() => {
-              return this.storage.set(MMobileService.MMOBILE_CONFIG, this.config);
+              return this.storage.set(MMobile.MMOBILE_CONFIG, this.config);
             })
             .then(() => {
-              return this.storage.set(MMobileService.LAST_UPDATED_KEY, new Date());
+              return this.storage.set(MMobile.LAST_UPDATED_KEY, new Date());
             })
             .then(() => {
               resolve(true);
@@ -51,23 +51,23 @@ export class MMobileService {
           console.log(`Error downloading MMobile config. Reason: ${JSON.stringify(error)}`);
           this.storage.ready()
             .then(() => {
-              return this.storage.get(MMobileService.MMOBILE_CONFIG);
+              return this.storage.get(MMobile.MMOBILE_CONFIG);
             })
             .then(config => {
               if (config != null) {
                 this.config = config;
                 resolve(false);
               } else {
-                this.http.get(MMobileService.INITIAL_CONFIG_PATH).toPromise()
+                this.http.get(MMobile.INITIAL_CONFIG_PATH).toPromise()
                 .then(result => {
                   this.config = result;
                   this.storage.ready()
                     .then(() => {
-                      return this.storage.get(MMobileService.LAST_UPDATED_KEY);
+                      return this.storage.get(MMobile.LAST_UPDATED_KEY);
                     })
                     .then(lastUpdatedDate => {
                       if (lastUpdatedDate == null) {
-                        return this.storage.set(MMobileService.LAST_UPDATED_KEY, new Date());
+                        return this.storage.set(MMobile.LAST_UPDATED_KEY, new Date());
                       } else {
                         return Promise.resolve();
                       }
@@ -166,7 +166,7 @@ export class MMobileService {
     return new Promise<Date>((resolve, reject) => {
       this.storage.ready()
       .then(() => {
-        return this.storage.get(MMobileService.LAST_UPDATED_KEY);
+        return this.storage.get(MMobile.LAST_UPDATED_KEY);
       })
       .then(date => {
         resolve (new Date(date));
@@ -179,7 +179,7 @@ export class MMobileService {
 
   writeLog(log: string) {
     let message = `>>>>>>> ${this.getFormattedDateWithHour()}: ${log}` + '\n';
-    this.file.writeFile(`${this.file.dataDirectory}${MMobileService.LOGS_DIR}/`, this.getLogsFileName(), message, {append: true})
+    this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), message, {append: true})
       .catch(err => {
        console.log(`Error writing log to file. Discarding it. Reason: ${JSON.stringify(err)}`);
       });
@@ -189,9 +189,9 @@ export class MMobileService {
     this.checkIfIsInitialized();
     return new Promise<boolean>((resolve, reject) => {
       if (this.isLogsEnabled()) {
-        this.file.readAsText(`${this.file.dataDirectory}${MMobileService.LOGS_DIR}/`, this.getLogsFileName())
+        this.file.readAsText(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName())
         .then(log => {
-          let logsUrl = `${this.baseUrl}/services/public/${this.appName}/${this.version}/${MMobileService.LOGS_SERVICE_KEY}`;
+          let logsUrl = `${this.baseUrl}/services/public/${this.appName}/${this.version}/${MMobile.LOGS_SERVICE_KEY}`;
           let body = {
             'rawlog': btoa(log),
             'deviceId': deviceName
@@ -218,8 +218,8 @@ export class MMobileService {
   isLogsEnabled() {
     this.checkIfIsInitialized();
     return (this.config.services !== null
-            && this.config.services[MMobileService.LOGS_SERVICE_KEY] !== null
-            && this.config.services[MMobileService.LOGS_SERVICE_KEY] !== null);
+            && this.config.services[MMobile.LOGS_SERVICE_KEY] !== null
+            && this.config.services[MMobile.LOGS_SERVICE_KEY] !== null);
   }
 
   getServiceUrl(key: string) {
@@ -237,15 +237,15 @@ export class MMobileService {
   }
 
   private prepareLogs() {
-    this.file.checkDir(this.file.dataDirectory, MMobileService.LOGS_DIR)
+    this.file.checkDir(this.file.dataDirectory, MMobile.LOGS_DIR)
       .then(() => {
         // Logs directory exists. Check if the file is created for today
-         this.file.checkFile(`${this.file.dataDirectory}${MMobileService.LOGS_DIR}/`, this.getLogsFileName())
+         this.file.checkFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName())
           .then(() => {
             // Logs file exists for today, nothing to do
           })
           .catch(err => {
-            this.file.removeRecursively(this.file.dataDirectory, MMobileService.LOGS_DIR)
+            this.file.removeRecursively(this.file.dataDirectory, MMobile.LOGS_DIR)
               .then(() => {
                 this.prepareLogs();
               });
@@ -256,9 +256,9 @@ export class MMobileService {
           console.log(`Cordova not enabled. Discarding it. Reason: ${JSON.stringify(err)}`);
           return;
         }
-        this.file.createDir(this.file.dataDirectory, MMobileService.LOGS_DIR, false)
+        this.file.createDir(this.file.dataDirectory, MMobile.LOGS_DIR, false)
           .then(() => {
-            this.file.createFile(`${this.file.dataDirectory}${MMobileService.LOGS_DIR}/`, this.getLogsFileName(), true);
+            this.file.createFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), true);
           });
       });
   }

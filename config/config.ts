@@ -29,7 +29,7 @@ export class Config {
     private http: HttpClient,
     private actionSheetCtrl: ActionSheetController,
     private toastCtrl: ToastController,
-    private log: LogService) {}
+    private log: Log) {}
 
   ready() {
     if (this.isReady) return Promise.resolve();
