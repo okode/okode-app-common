@@ -2,7 +2,9 @@
   "name": "@okode/common",
   "version": "2.0.0",
   "description": "Okode Common Library for Ionic and Angular",
-  "main": "index.ts",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/okode/okode-app-common.git"
