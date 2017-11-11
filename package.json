@@ -12,7 +12,7 @@
   "author": "Okode",
   "homepage": "https://github.com/okode/okode-app-common#readme",
   "scripts": {
-    "tsc": "tsc"
+    "build": "tsc"
   },
   "dependencies": {
     "@angular/core": "^5.0.0",
