@@ -1,11 +1,27 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "module": "es2015",
+    "moduleResolution": "node",
+    "sourceMap": true,
     "target": "es5",
     "declaration": true,
     "outDir": "./dist"
   },
   "include": [
-    "src/**/*"
-  ]
+    "src/**/**.ts",
+    "node_modules/cordova-fabric-plugin/typings/*.d.ts"
+  ],
+  "compileOnSave": false,
+  "atom": {
+    "rewriteTsconfig": false
+  }
 }
