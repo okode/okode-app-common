@@ -4,9 +4,9 @@ Okode Common Library for Ionic and Angular.
 
 ## Angular 5.+
 
-Use branch `master` or tagged versions.
+Use branch `master` or `2.x` tagged versions.
 
 ## Angular 4.+
 
-Use branch `support/ng4` or tagged versions.
+Use branch `support/1.x` or `1.x` tagged versions.
 
