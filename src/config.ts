@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 import { AppVersion } from '@ionic-native/app-version';
 import { HttpClient } from '@angular/common/http';
 import { ActionSheetController, ToastController, Platform } from 'ionic-angular';
-import { Log } from '../mmobile/log';
+import { Log } from './log';
 
 type PromiseResolve = (value?: void | PromiseLike<void>) => void;
 type PromiseReject = (reason?: any) => void;
