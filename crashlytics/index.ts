@@ -1,1 +1,0 @@
-export { CrashlyticsErrorHandler } from './crashlytics';
