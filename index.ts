@@ -1,1 +1,1 @@
-import { MMobileService } from './mmobile';
+export { MMobileService } from './mmobile/mmobile';
