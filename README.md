@@ -10,3 +10,8 @@ Use branch `master` or `2.x` tagged versions.
 
 Use branch `support/1.x` or `1.x` tagged versions.
 
+## Bulding
+
+```
+$ npm install ; npm run build
+```
