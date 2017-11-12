@@ -1,6 +1,6 @@
 {
   "name": "@okode/common",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Okode Common Library for Ionic and Angular",
   "private": true,
   "main": "dist/index.js",
