@@ -1,10 +1,10 @@
 {
   "name": "@okode/common",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Okode Common Library for Ionic and Angular",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/okode/okode-app-common.git"
@@ -12,7 +12,7 @@
   "author": "Okode",
   "homepage": "https://github.com/okode/okode-app-common#readme",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc -p ."
   },
   "dependencies": {
     "@angular/core": "^5.0.0",

@@ -13,8 +13,7 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "target": "es5",
-    "declaration": true,
-    "outDir": "./dist"
+    "declaration": true
   },
   "include": [
     "src/**/**.ts",
