@@ -203,7 +203,7 @@ var SelectSearchable = /** @class */ (function () {
     SelectSearchable = SelectSearchable_1 = __decorate([
         Component({
             selector: 'select-searchable',
-            template: "\n    <div class=\"select-searchable-label\">{{title}}</div>\n    <div class=\"select-searchable-value\">{{formatValue()}}</div>\n    <div class=\"select-searchable-icon\">\n        <div class=\"select-searchable-icon-inner\"></div>\n    </div>\n    <button aria-haspopup=\"true\" ion-button=\"item-cover\" class=\"item-cover\"></button>\n    ",
+            templateUrl: 'select-searchable.html',
             styleUrls: ['select-searchable.scss'],
             providers: [{
                     provide: NG_VALUE_ACCESSOR,

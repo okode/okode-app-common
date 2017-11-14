@@ -5,14 +5,7 @@ import { SelectSearchablePage } from './select-searchable-page';
 
 @Component({
     selector: 'select-searchable',
-    template: `
-    <div class="select-searchable-label">{{title}}</div>
-    <div class="select-searchable-value">{{formatValue()}}</div>
-    <div class="select-searchable-icon">
-        <div class="select-searchable-icon-inner"></div>
-    </div>
-    <button aria-haspopup="true" ion-button="item-cover" class="item-cover"></button>
-    `,
+    templateUrl: 'select-searchable.html',
     styleUrls: ['select-searchable.scss'],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
