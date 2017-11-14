@@ -56,19 +56,7 @@ import { SelectSearchable } from './select-searchable';
         </ion-toolbar>
     </ion-footer>
     `,
-    styles: [`
-    .select-searchable-page {
-        &.select-searchable-page-can-reset.select-searchable-page-multiple {
-            .footer .col:first-child {
-                padding-right: $content-margin / 2;
-            }
-            
-            .footer .col:last-child {
-                padding-left: $content-margin / 2;
-            }
-        }
-    }
-    `],
+    styleUrls: ['select-searchable-page.scss'],
     host: {
         'class': 'select-searchable-page',
         '[class.select-searchable-page-can-reset]': 'selectComponent.canReset',
