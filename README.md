@@ -1,8 +1,9 @@
 # Okode App Common
 
-Okode Common Library for Ionic and Angular.
+Okode Common Library for Ionic and Angular
 
 ## Building
+
 
 ```
 $ npm install ; npm run build
