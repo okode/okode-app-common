@@ -2,7 +2,7 @@
 
 Okode Common Library for Ionic and Angular.
 
-## Bulding
+## Building
 
 ```
 $ npm install ; npm run build
