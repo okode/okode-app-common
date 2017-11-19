@@ -13,7 +13,7 @@ import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
-var MMobile = /** @class */ (function () {
+var MMobile = (function () {
     function MMobile(http, file, device, storage) {
         this.http = http;
         this.file = file;

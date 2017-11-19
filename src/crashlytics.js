@@ -21,7 +21,7 @@ import { Injectable, isDevMode } from '@angular/core';
 import { Platform, IonicErrorHandler } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
-var CrashlyticsErrorHandler = /** @class */ (function (_super) {
+var CrashlyticsErrorHandler = (function (_super) {
     __extends(CrashlyticsErrorHandler, _super);
     function CrashlyticsErrorHandler(platform, splashScreen) {
         var _this = _super.call(this) || this;
