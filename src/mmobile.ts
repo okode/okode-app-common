@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
-import * as safeJsonStringify from 'safe-json-stringify';
-
+import { Logger } from './logger'
+import 'safe-json-stringify';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -16,15 +16,20 @@ export class MMobile {
 
   private config: any;
 
+  private logger: Logger;
+
   private static readonly INITIAL_CONFIG_PATH = 'assets/config/mmobileInitialConfig.json';
   private static readonly LOGS_DIR = 'mmobilelogs';
   private static readonly LOGS_SERVICE_KEY = 'MMOBILE_sendLogs';
   private static readonly LAST_UPDATED_KEY = 'MMOBILE_lastUpdated';
   private static readonly MMOBILE_CONFIG = 'MMOBILE_config';
 
-  constructor(private http: HttpClient, private file: File, private device: Device, private storage: Storage)  {
-
-  }
+  constructor(
+    private http: HttpClient,
+    private file: File,
+    private device: Device,
+    private storage: Storage
+  )  {}
 
   init(baseUrl: string, appName: string, version: string) {
     return new Promise<boolean>((resolve, reject) => {
@@ -50,7 +55,7 @@ export class MMobile {
             });
         })
         .catch((error: any) => {
-          console.log(`Error downloading MMobile config. Reason: ${safeJsonStringify(error)}`);
+          this.printLog(`Error downloading MMobile config. Reason: ${safeJsonStringify(error)}`);
           this.storage.ready()
             .then(() => {
               return this.storage.get(MMobile.MMOBILE_CONFIG);
@@ -79,7 +84,7 @@ export class MMobile {
                     });
                 })
                 .catch((error: any) => {
-                  console.error(`Error loading MMobile initial config. Reason: ${JSON.stringify(error)}`);
+                  this.printLog(`Error loading MMobile initial config. Reason: ${safeJsonStringify(error)}`);
                   reject();
                 });
               }
@@ -183,7 +188,7 @@ export class MMobile {
     let message = `>>>>>>> ${this.getFormattedDateWithHour()}: ${log}` + '\n';
     this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), message, {append: true})
       .catch(err => {
-       console.log(`Error writing log to file. Discarding it. Reason: ${JSON.stringify(err)}`);
+        this.printLog(`Error writing log to file. Discarding it. Reason: ${safeJsonStringify(err)}`);
       });
   }
 
@@ -207,7 +212,7 @@ export class MMobile {
           resolve(true);
         })
         .catch(error => {
-          this.writeLog(`Error sending MMobile logs. Reason: ${JSON.stringify(error)}`);
+          this.writeLog(`Error sending MMobile logs. Reason: ${safeJsonStringify(error)}`);
           resolve(false);
         });
       } else {
@@ -238,6 +243,10 @@ export class MMobile {
     return this.config != null;
   }
 
+  setLogger(logger: Logger) {
+    this.logger = logger;
+  }
+
   private prepareLogs() {
     this.file.checkDir(this.file.dataDirectory, MMobile.LOGS_DIR)
       .then(() => {
@@ -255,7 +264,7 @@ export class MMobile {
       })
       .catch(err => {
         if (err == 'cordova_not_available') {
-          console.log(`Cordova not enabled. Discarding it. Reason: ${JSON.stringify(err)}`);
+          this.printLog(`Cordova not enabled. Discarding it. Reason: ${safeJsonStringify(err)}`);
           return;
         }
         this.file.createDir(this.file.dataDirectory, MMobile.LOGS_DIR, false)
@@ -293,6 +302,14 @@ export class MMobile {
   private checkIfIsInitialized() {
     if (this.config == null) {
       throw('MMobile is not initialized');
+    }
+  }
+
+  private printLog(message?: any, ...optionalParams: any[]) {
+    if (this.logger == null) {
+      console.log(message, optionalParams);
+    } else {
+      this.logger.i(message, optionalParams);
     }
   }
 }
