@@ -1,8 +1,9 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { MMobile } from './mmobile';
+import { Logger } from '.logger';
 
 @Injectable()
-export class Log {
+export class Log implements Logger {
 
   private static INFO_TAG = '[INFO]';
   private static DEBUG_TAG = '[DEBUG]';
