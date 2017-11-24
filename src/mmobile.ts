@@ -4,8 +4,7 @@ import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
 import { Logger } from './logger';
-import safeJsonStringify from 'safe-json-stringify';
-
+import * as safeJsonStringify from 'safe-json-stringify';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
