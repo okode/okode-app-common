@@ -12,6 +12,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
+import safeJsonStringify from 'safe-json-stringify';
 import 'rxjs/add/operator/toPromise';
 var MMobile = (function () {
     function MMobile(http, file, device, storage) {
@@ -44,7 +45,7 @@ var MMobile = (function () {
                 });
             })
                 .catch(function (error) {
-                console.log("Error downloading MMobile config. Reason: " + JSON.stringify(error));
+                console.log("Error downloading MMobile config. Reason: " + safeJsonStringify(error));
                 _this.storage.ready()
                     .then(function () {
                     return _this.storage.get(MMobile_1.MMOBILE_CONFIG);
