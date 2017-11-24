@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Injectable, isDevMode } from '@angular/core';
 import { MMobile } from './mmobile';
-var Log = /** @class */ (function () {
+var Log = (function () {
     function Log(mmobile) {
         this.mmobile = mmobile;
     }

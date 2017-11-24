@@ -13,7 +13,7 @@ import { AppVersion } from '@ionic-native/app-version';
 import { HttpClient } from '@angular/common/http';
 import { ActionSheetController, ToastController, Platform } from 'ionic-angular';
 import { Log } from './log';
-var Config = /** @class */ (function () {
+var Config = (function () {
     function Config(platform, storage, appVersion, http, actionSheetCtrl, toastCtrl, log) {
         this.platform = platform;
         this.storage = storage;

@@ -4,6 +4,8 @@ import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
 import { Logger } from './logger'
+import safeJsonStringify from 'safe-json-stringify';
+
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -54,7 +56,7 @@ export class MMobile {
             });
         })
         .catch((error: any) => {
-          this.printLog(`Error downloading MMobile config. Reason: ${JSON.stringify(error)}`);
+          this.printLog(`Error downloading MMobile config. Reason: ${safeJsonStringify(error)}`);
           this.storage.ready()
             .then(() => {
               return this.storage.get(MMobile.MMOBILE_CONFIG);
