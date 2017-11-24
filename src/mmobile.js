@@ -12,7 +12,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
-import stringify from 'json-stringify-safe';
 import 'rxjs/add/operator/toPromise';
 var MMobile = (function () {
     function MMobile(http, file, device, storage) {
@@ -45,7 +44,7 @@ var MMobile = (function () {
                 });
             })
                 .catch(function (error) {
-                _this.printLog("Error downloading MMobile config. Reason: " + stringify(error));
+                _this.printLog("Error downloading MMobile config. Reason: " + JSON.stringify(error));
                 _this.storage.ready()
                     .then(function () {
                     return _this.storage.get(MMobile_1.MMOBILE_CONFIG);
@@ -76,7 +75,7 @@ var MMobile = (function () {
                             });
                         })
                             .catch(function (error) {
-                            _this.printLog("Error loading MMobile initial config. Reason: " + stringify(error));
+                            _this.printLog("Error loading MMobile initial config. Reason: " + JSON.stringify(error));
                             reject();
                         });
                     }
@@ -166,7 +165,7 @@ var MMobile = (function () {
         var message = ">>>>>>> " + this.getFormattedDateWithHour() + ": " + log + '\n';
         this.file.writeFile("" + this.file.dataDirectory + MMobile_1.LOGS_DIR + "/", this.getLogsFileName(), message, { append: true })
             .catch(function (err) {
-            _this.printLog("Error writing log to file. Discarding it. Reason: " + stringify(err));
+            _this.printLog("Error writing log to file. Discarding it. Reason: " + JSON.stringify(err));
         });
     };
     MMobile.prototype.sendLogs = function (deviceName) {
@@ -190,7 +189,7 @@ var MMobile = (function () {
                     resolve(true);
                 })
                     .catch(function (error) {
-                    _this.writeLog("Error sending MMobile logs. Reason: " + stringify(error));
+                    _this.writeLog("Error sending MMobile logs. Reason: " + JSON.stringify(error));
                     resolve(false);
                 });
             }
@@ -240,7 +239,7 @@ var MMobile = (function () {
         })
             .catch(function (err) {
             if (err == 'cordova_not_available') {
-                _this.printLog("Cordova not enabled. Discarding it. Reason: " + stringify(err));
+                _this.printLog("Cordova not enabled. Discarding it. Reason: " + JSON.stringify(err));
                 return;
             }
             _this.file.createDir(_this.file.dataDirectory, MMobile_1.LOGS_DIR, false)

@@ -2,7 +2,6 @@ import { Injectable, isDevMode } from '@angular/core';
 import { Platform, IonicErrorHandler } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
-import stringify from 'json-stringify-safe';
 
 @Injectable()
 export class CrashlyticsErrorHandler extends IonicErrorHandler {
@@ -39,7 +38,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
           this.displayErrorMsgAndReload();
         }).catch(reason => console.log('Crashlytics catch: ' + reason));
       } else {
-        fabric.Crashlytics.sendNonFatalCrash(stringify(error));
+        fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error));
         this.displayErrorMsgAndReload();
       }
     }

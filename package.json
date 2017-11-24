@@ -32,8 +32,7 @@
     "ionic-angular": ">= 3.8.0",
     "stacktrace-js": ">= 2.0.0",
     "rxjs": ">= 5.4.3",
-    "zone.js": ">= 0.8.18",
-    "json-stringify-safe": ">= 5.0.1"
+    "zone.js": ">= 0.8.18"
   },
   "devDependencies": {
     "@angular/compiler": "4.4.4",
@@ -56,8 +55,6 @@
     "rxjs": "5.4.3",
     "zone.js": "0.8.18",
     "typescript": "2.4.2",
-    "json-stringify-safe": "5.0.1",
-    "@types/json-stringify-safe": "5.0.0",
     "@types/stacktrace-js": "0.0.32"
   }
 }

@@ -4,7 +4,6 @@ import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
 import { Logger } from './logger';
-import stringify from 'json-stringify-safe';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -55,7 +54,7 @@ export class MMobile {
             });
         })
         .catch((error: any) => {
-          this.printLog(`Error downloading MMobile config. Reason: ${stringify(error)}`);
+          this.printLog(`Error downloading MMobile config. Reason: ${JSON.stringify(error)}`);
           this.storage.ready()
             .then(() => {
               return this.storage.get(MMobile.MMOBILE_CONFIG);
@@ -84,7 +83,7 @@ export class MMobile {
                     });
                 })
                 .catch((error: any) => {
-                  this.printLog(`Error loading MMobile initial config. Reason: ${stringify(error)}`);
+                  this.printLog(`Error loading MMobile initial config. Reason: ${JSON.stringify(error)}`);
                   reject();
                 });
               }
@@ -188,7 +187,7 @@ export class MMobile {
     let message = `>>>>>>> ${this.getFormattedDateWithHour()}: ${log}` + '\n';
     this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), message, {append: true})
       .catch(err => {
-        this.printLog(`Error writing log to file. Discarding it. Reason: ${stringify(err)}`);
+        this.printLog(`Error writing log to file. Discarding it. Reason: ${JSON.stringify(err)}`);
       });
   }
 
@@ -212,7 +211,7 @@ export class MMobile {
           resolve(true);
         })
         .catch(error => {
-          this.writeLog(`Error sending MMobile logs. Reason: ${stringify(error)}`);
+          this.writeLog(`Error sending MMobile logs. Reason: ${JSON.stringify(error)}`);
           resolve(false);
         });
       } else {
@@ -264,7 +263,7 @@ export class MMobile {
       })
       .catch(err => {
         if (err == 'cordova_not_available') {
-          this.printLog(`Cordova not enabled. Discarding it. Reason: ${stringify(err)}`);
+          this.printLog(`Cordova not enabled. Discarding it. Reason: ${JSON.stringify(err)}`);
           return;
         }
         this.file.createDir(this.file.dataDirectory, MMobile.LOGS_DIR, false)
