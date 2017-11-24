@@ -1,5 +1,6 @@
 import { MMobile } from './mmobile';
-export declare class Log {
+import { Logger } from './logger';
+export declare class Log implements Logger {
     private mmobile;
     private static INFO_TAG;
     private static DEBUG_TAG;

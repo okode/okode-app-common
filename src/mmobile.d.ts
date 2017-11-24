@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
+import { Logger } from './logger';
 import 'rxjs/add/operator/toPromise';
 export declare class MMobile {
     private http;
@@ -12,6 +13,7 @@ export declare class MMobile {
     private appName;
     private version;
     private config;
+    private logger;
     private static readonly INITIAL_CONFIG_PATH;
     private static readonly LOGS_DIR;
     private static readonly LOGS_SERVICE_KEY;
@@ -31,9 +33,11 @@ export declare class MMobile {
     isLogsEnabled(): boolean;
     getServiceUrl(key: string): string;
     isInitialized(): boolean;
+    setLogger(logger: Logger): void;
     private prepareLogs();
     private getFormattedDateWithHour();
     private getLogsFileName();
     private jsonToURLEncoded(jsonString);
     private checkIfIsInitialized();
+    private printLog(message?, ...optionalParams);
 }

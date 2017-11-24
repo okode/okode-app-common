@@ -45,7 +45,7 @@ var MMobile = (function () {
                 });
             })
                 .catch(function (error) {
-                console.log("Error downloading MMobile config. Reason: " + safeJsonStringify(error));
+                _this.printLog("Error downloading MMobile config. Reason: " + safeJsonStringify(error));
                 _this.storage.ready()
                     .then(function () {
                     return _this.storage.get(MMobile_1.MMOBILE_CONFIG);
@@ -76,7 +76,7 @@ var MMobile = (function () {
                             });
                         })
                             .catch(function (error) {
-                            console.error("Error loading MMobile initial config. Reason: " + JSON.stringify(error));
+                            _this.printLog("Error loading MMobile initial config. Reason: " + safeJsonStringify(error));
                             reject();
                         });
                     }
@@ -162,10 +162,11 @@ var MMobile = (function () {
         });
     };
     MMobile.prototype.writeLog = function (log) {
+        var _this = this;
         var message = ">>>>>>> " + this.getFormattedDateWithHour() + ": " + log + '\n';
         this.file.writeFile("" + this.file.dataDirectory + MMobile_1.LOGS_DIR + "/", this.getLogsFileName(), message, { append: true })
             .catch(function (err) {
-            console.log("Error writing log to file. Discarding it. Reason: " + JSON.stringify(err));
+            _this.printLog("Error writing log to file. Discarding it. Reason: " + safeJsonStringify(err));
         });
     };
     MMobile.prototype.sendLogs = function (deviceName) {
@@ -189,7 +190,7 @@ var MMobile = (function () {
                     resolve(true);
                 })
                     .catch(function (error) {
-                    _this.writeLog("Error sending MMobile logs. Reason: " + JSON.stringify(error));
+                    _this.writeLog("Error sending MMobile logs. Reason: " + safeJsonStringify(error));
                     resolve(false);
                 });
             }
@@ -218,6 +219,9 @@ var MMobile = (function () {
     MMobile.prototype.isInitialized = function () {
         return this.config != null;
     };
+    MMobile.prototype.setLogger = function (logger) {
+        this.logger = logger;
+    };
     MMobile.prototype.prepareLogs = function () {
         var _this = this;
         this.file.checkDir(this.file.dataDirectory, MMobile_1.LOGS_DIR)
@@ -236,7 +240,7 @@ var MMobile = (function () {
         })
             .catch(function (err) {
             if (err == 'cordova_not_available') {
-                console.log("Cordova not enabled. Discarding it. Reason: " + JSON.stringify(err));
+                _this.printLog("Cordova not enabled. Discarding it. Reason: " + safeJsonStringify(err));
                 return;
             }
             _this.file.createDir(_this.file.dataDirectory, MMobile_1.LOGS_DIR, false)
@@ -270,6 +274,18 @@ var MMobile = (function () {
             throw ('MMobile is not initialized');
         }
     };
+    MMobile.prototype.printLog = function (message) {
+        var optionalParams = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            optionalParams[_i - 1] = arguments[_i];
+        }
+        if (this.logger == null) {
+            console.log(message, optionalParams);
+        }
+        else {
+            this.logger.i(message, optionalParams);
+        }
+    };
     MMobile.INITIAL_CONFIG_PATH = 'assets/config/mmobileInitialConfig.json';
     MMobile.LOGS_DIR = 'mmobilelogs';
     MMobile.LOGS_SERVICE_KEY = 'MMOBILE_sendLogs';
@@ -277,7 +293,10 @@ var MMobile = (function () {
     MMobile.MMOBILE_CONFIG = 'MMOBILE_config';
     MMobile = MMobile_1 = __decorate([
         Injectable(),
-        __metadata("design:paramtypes", [HttpClient, File, Device, Storage])
+        __metadata("design:paramtypes", [HttpClient,
+            File,
+            Device,
+            Storage])
     ], MMobile);
     return MMobile;
     var MMobile_1;
