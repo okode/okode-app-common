@@ -85,7 +85,7 @@ export class MMobile {
                     });
                 })
                 .catch((error: any) => {
-                  this.printLog(`Error loading MMobile initial config. Reason: ${JSON.stringify(error)}`);
+                  this.printLog(`Error loading MMobile initial config. Reason: ${safeJsonStringify(error)}`);
                   reject();
                 });
               }
@@ -189,7 +189,7 @@ export class MMobile {
     let message = `>>>>>>> ${this.getFormattedDateWithHour()}: ${log}` + '\n';
     this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), message, {append: true})
       .catch(err => {
-        this.printLog(`Error writing log to file. Discarding it. Reason: ${JSON.stringify(err)}`);
+        this.printLog(`Error writing log to file. Discarding it. Reason: ${safeJsonStringify(err)}`);
       });
   }
 
@@ -213,7 +213,7 @@ export class MMobile {
           resolve(true);
         })
         .catch(error => {
-          this.writeLog(`Error sending MMobile logs. Reason: ${JSON.stringify(error)}`);
+          this.writeLog(`Error sending MMobile logs. Reason: ${safeJsonStringify(error)}`);
           resolve(false);
         });
       } else {
@@ -265,7 +265,7 @@ export class MMobile {
       })
       .catch(err => {
         if (err == 'cordova_not_available') {
-          this.printLog(`Cordova not enabled. Discarding it. Reason: ${JSON.stringify(err)}`);
+          this.printLog(`Cordova not enabled. Discarding it. Reason: ${safeJsonStringify(err)}`);
           return;
         }
         this.file.createDir(this.file.dataDirectory, MMobile.LOGS_DIR, false)
