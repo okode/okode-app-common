@@ -21,7 +21,7 @@ import { Injectable, isDevMode } from '@angular/core';
 import { Platform, IonicErrorHandler } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
-import safeJsonStringify from 'safe-json-stringify';
+import stringify from 'json-stringify-safe';
 var CrashlyticsErrorHandler = (function (_super) {
     __extends(CrashlyticsErrorHandler, _super);
     function CrashlyticsErrorHandler(platform, splashScreen) {
@@ -58,7 +58,7 @@ var CrashlyticsErrorHandler = (function (_super) {
                 }).catch(function (reason) { return console.log('Crashlytics catch: ' + reason); });
             }
             else {
-                fabric.Crashlytics.sendNonFatalCrash(safeJsonStringify(error));
+                fabric.Crashlytics.sendNonFatalCrash(stringify(error));
                 this.displayErrorMsgAndReload();
             }
         }
