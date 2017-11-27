@@ -44,7 +44,7 @@ var MMobile = (function () {
                 });
             })
                 .catch(function (error) {
-                _this.printLog("Error downloading MMobile config. Reason: " + JSON.stringify(error));
+                _this.printLog("Error downloading MMobile config. Check it out: " + url);
                 _this.storage.ready()
                     .then(function () {
                     return _this.storage.get(MMobile_1.MMOBILE_CONFIG);
