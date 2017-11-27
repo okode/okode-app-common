@@ -54,7 +54,7 @@ export class MMobile {
             });
         })
         .catch((error: any) => {
-          this.printLog(`Error downloading MMobile config. Reason: ${JSON.stringify(error)}`);
+          this.printLog(`Error downloading MMobile config. Check it out: ${url}`);
           this.storage.ready()
             .then(() => {
               return this.storage.get(MMobile.MMOBILE_CONFIG);
