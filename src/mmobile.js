@@ -94,6 +94,10 @@ var MMobile = (function () {
     MMobile.prototype.getVersion = function () {
         return this.version;
     };
+    MMobile.prototype.getTimeout = function () {
+        this.checkIfIsInitialized();
+        return this.config.timeout;
+    };
     MMobile.prototype.isActive = function () {
         this.checkIfIsInitialized();
         return this.config.active;

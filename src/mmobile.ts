@@ -106,6 +106,11 @@ export class MMobile {
     return this.version;
   }
 
+  getTimeout() {
+    this.checkIfIsInitialized();
+    return this.config.timeout;
+  }
+
   isActive() {
     this.checkIfIsInitialized();
     return this.config.active;

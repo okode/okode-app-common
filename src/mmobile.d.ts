@@ -24,6 +24,7 @@ export declare class MMobile {
     reloadConfig(): Promise<boolean>;
     getCustomConfig(): any;
     getVersion(): string;
+    getTimeout(): any;
     isActive(): any;
     getFeatures(): any;
     isDeviceLocked(): boolean;
