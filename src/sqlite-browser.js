@@ -10,31 +10,6 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Database } from 'sql.js';
-export function resolveSQLiteForCordovaOrBrowser(platform) {
-    if (platform.is('cordova')) {
-        return new SQLite();
-    }
-    else {
-        return new SQLiteBrowser();
-    }
-}
-var SQLiteBrowser = (function (_super) {
-    __extends(SQLiteBrowser, _super);
-    function SQLiteBrowser() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    SQLiteBrowser.prototype.create = function (config) {
-        return new Promise(function (resolve, reject) { resolve(new SQLiteObjectBrowser(new Database())); });
-    };
-    SQLiteBrowser.prototype.echoTest = function () {
-        return new Promise(function (resolve, reject) { resolve(); });
-    };
-    SQLiteBrowser.prototype.deleteDatabase = function (config) {
-        return new Promise(function (resolve, reject) { resolve(); });
-    };
-    return SQLiteBrowser;
-}(SQLite));
-export { SQLiteBrowser };
 var SQLiteObjectBrowser = (function (_super) {
     __extends(SQLiteObjectBrowser, _super);
     function SQLiteObjectBrowser() {
@@ -69,4 +44,21 @@ var SQLiteObjectBrowser = (function (_super) {
     };
     return SQLiteObjectBrowser;
 }(SQLiteObject));
+var SQLiteBrowser = (function (_super) {
+    __extends(SQLiteBrowser, _super);
+    function SQLiteBrowser() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    SQLiteBrowser.prototype.create = function (config) {
+        return new Promise(function (resolve, reject) { resolve(new SQLiteObjectBrowser(new Database())); });
+    };
+    SQLiteBrowser.prototype.echoTest = function () {
+        return new Promise(function (resolve, reject) { resolve(); });
+    };
+    SQLiteBrowser.prototype.deleteDatabase = function (config) {
+        return new Promise(function (resolve, reject) { resolve(); });
+    };
+    return SQLiteBrowser;
+}(SQLite));
+export { SQLiteBrowser };
 //# sourceMappingURL=sqlite-browser.js.map

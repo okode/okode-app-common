@@ -1,30 +1,5 @@
-import { Platform } from 'ionic-angular';
 import { SQLite, SQLiteDatabaseConfig, SQLiteObject } from '@ionic-native/sqlite';
 import { Database } from 'sql.js';
-
-export function resolveSQLiteForCordovaOrBrowser(platform: Platform) {
-  if (platform.is('cordova')) {
-    return new SQLite();
-  } else {
-    return new SQLiteBrowser();
-  }
-}
-
-export class SQLiteBrowser extends SQLite {
-
-  create(config: SQLiteDatabaseConfig): Promise<SQLiteObject> {
-    return new Promise((resolve, reject) => { resolve(new SQLiteObjectBrowser(new Database())); });
-  }
-
-  echoTest(): Promise<any> {
-    return new Promise((resolve, reject) => { resolve(); });
-  }
-
-  deleteDatabase(config: SQLiteDatabaseConfig): Promise<any> {
-    return new Promise((resolve, reject) => { resolve(); });
-  }
-
-}
 
 class SQLiteObjectBrowser extends SQLiteObject {
 
@@ -53,6 +28,22 @@ class SQLiteObjectBrowser extends SQLiteObject {
 
   sqlBatch(sqlStatements: Array<string | string[] | any>): Promise<any> {
     return new Promise((resolve, reject) => { reject('sqlBatch mock not implemented'); });
+  }
+
+}
+
+export class SQLiteBrowser extends SQLite {
+
+  create(config: SQLiteDatabaseConfig): Promise<SQLiteObject> {
+    return new Promise((resolve, reject) => { resolve(new SQLiteObjectBrowser(new Database())); });
+  }
+
+  echoTest(): Promise<any> {
+    return new Promise((resolve, reject) => { resolve(); });
+  }
+
+  deleteDatabase(config: SQLiteDatabaseConfig): Promise<any> {
+    return new Promise((resolve, reject) => { resolve(); });
   }
 
 }
