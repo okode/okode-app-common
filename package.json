@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@types/sql.js": "^0.0.29"
-  }
+  },
   "devDependencies": {
     "@angular/compiler": "4.4.4",
     "@angular/compiler-cli": "4.4.4",
