@@ -13,6 +13,7 @@ export declare class Config {
     private log;
     private static readonly ENVIRONMENT_KEY;
     private static readonly CONFIG_JSON_PATH;
+    private static readonly BROWSER_VERSION;
     private environment;
     private config;
     private updateToVersion;
@@ -28,5 +29,7 @@ export declare class Config {
     getConfig(): any;
     getEnvironment(): string;
     getUpdateToVersion(): number;
+    getAppName(browserAppName: string): Promise<string>;
     getVersionNumber(): Promise<string>;
+    getMMobileVersion(): any;
 }
