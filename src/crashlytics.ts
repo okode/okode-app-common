@@ -2,13 +2,15 @@ import { Injectable, isDevMode } from '@angular/core';
 import { Platform, IonicErrorHandler } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
+import { Log } from './log';
 
 @Injectable()
 export class CrashlyticsErrorHandler extends IonicErrorHandler {
 
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen
+    private splashScreen: SplashScreen,
+    private log: Log
   ) {
     super();
   }
@@ -51,7 +53,21 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private isAnIgnorableError(error: any) {
-    if (error && error.status == 500) return true;
+    if (!error) { return false; }
+    if (error.status == 500 || this.isIgnorableNavError(error.message)) { return true; }
+    return false;
+  }
+
+  private isIgnorableNavError(message: string) {
+    if (!message) { return false; }
+    if (
+      message.includes('navigation stack needs at least one root page') ||
+      message.includes('no views in the stack to be removed') ||
+      message.includes('removeView was not found')
+    ) {
+      this.log.e(`Ignoring Ionic nav error ${message}`);
+      return true;
+    }
     return false;
   }
 
