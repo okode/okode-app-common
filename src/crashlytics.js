@@ -32,6 +32,9 @@ var CrashlyticsErrorHandler = (function (_super) {
         return _this;
     }
     CrashlyticsErrorHandler.prototype.handleError = function (error) {
+        if (this.isIgnorableNavError(error)) {
+            return;
+        }
         _super.prototype.handleError.call(this, error);
         if (!isDevMode() && !this.isAnIgnorableError(error)) {
             this.sendError(error);
@@ -70,18 +73,20 @@ var CrashlyticsErrorHandler = (function (_super) {
         window.location.reload();
     };
     CrashlyticsErrorHandler.prototype.isAnIgnorableError = function (error) {
-        if (!error) {
-            return false;
-        }
-        if (error.status == 500 || this.isIgnorableNavError(error.message)) {
+        if (error && error.status == 500)
             return true;
-        }
         return false;
     };
-    CrashlyticsErrorHandler.prototype.isIgnorableNavError = function (message) {
-        if (!message) {
+    CrashlyticsErrorHandler.prototype.isIgnorableNavError = function (error) {
+        if (!error || !error.message) {
             return false;
         }
+        var message = error.message;
+        /**
+         * Messages got from:
+         * https://github.com/ionic-team/ionic/blob/ae4be669bb96de01ff2224ff36da89e9cde12c7f/src/navigation/nav-controller-base.ts#L322
+         *
+         */
         if (message.includes('navigation stack needs at least one root page') ||
             message.includes('no views in the stack to be removed') ||
             message.includes('removeView was not found')) {

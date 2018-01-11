@@ -16,6 +16,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   handleError(error: any) {
+    if (this.isIgnorableNavError(error)) { return; }
     super.handleError(error);
     if (!isDevMode() && !this.isAnIgnorableError(error)) {
       this.sendError(error);
@@ -53,13 +54,18 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private isAnIgnorableError(error: any) {
-    if (!error) { return false; }
-    if (error.status == 500 || this.isIgnorableNavError(error.message)) { return true; }
+    if (error && error.status == 500) return true;
     return false;
   }
 
-  private isIgnorableNavError(message: string) {
-    if (!message) { return false; }
+  private isIgnorableNavError(error: any) {
+    if (!error || !error.message) { return false; }
+    let message = error.message;
+    /**
+     * Messages got from:
+     * https://github.com/ionic-team/ionic/blob/ae4be669bb96de01ff2224ff36da89e9cde12c7f/src/navigation/nav-controller-base.ts#L322
+     * 
+     */
     if (
       message.includes('navigation stack needs at least one root page') ||
       message.includes('no views in the stack to be removed') ||
