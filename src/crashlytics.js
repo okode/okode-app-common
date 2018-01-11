@@ -21,12 +21,14 @@ import { Injectable, isDevMode } from '@angular/core';
 import { Platform, IonicErrorHandler } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
+import { Log } from './log';
 var CrashlyticsErrorHandler = (function (_super) {
     __extends(CrashlyticsErrorHandler, _super);
-    function CrashlyticsErrorHandler(platform, splashScreen) {
+    function CrashlyticsErrorHandler(platform, splashScreen, log) {
         var _this = _super.call(this) || this;
         _this.platform = platform;
         _this.splashScreen = splashScreen;
+        _this.log = log;
         return _this;
     }
     CrashlyticsErrorHandler.prototype.handleError = function (error) {
@@ -68,14 +70,31 @@ var CrashlyticsErrorHandler = (function (_super) {
         window.location.reload();
     };
     CrashlyticsErrorHandler.prototype.isAnIgnorableError = function (error) {
-        if (error && error.status == 500)
+        if (!error) {
+            return false;
+        }
+        if (error.status == 500 || this.isIgnorableNavError(error.message)) {
             return true;
+        }
+        return false;
+    };
+    CrashlyticsErrorHandler.prototype.isIgnorableNavError = function (message) {
+        if (!message) {
+            return false;
+        }
+        if (message.includes('navigation stack needs at least one root page') ||
+            message.includes('no views in the stack to be removed') ||
+            message.includes('removeView was not found')) {
+            this.log.e("Ignoring Ionic nav error " + message);
+            return true;
+        }
         return false;
     };
     CrashlyticsErrorHandler = __decorate([
         Injectable(),
         __metadata("design:paramtypes", [Platform,
-            SplashScreen])
+            SplashScreen,
+            Log])
     ], CrashlyticsErrorHandler);
     return CrashlyticsErrorHandler;
 }(IonicErrorHandler));
