@@ -210,7 +210,7 @@ export class MMobile {
           let headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded'
           });
-          return this.http.post(logsUrl, this.jsonToURLEncoded(body), { headers: headers }).toPromise();
+          return this.http.post(logsUrl, this.jsonToURLEncoded(body), { headers: headers, responseType: 'text' }).toPromise();
         })
         .then(result => {
           resolve(true);

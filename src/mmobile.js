@@ -187,7 +187,7 @@ var MMobile = (function () {
                     var headers = new HttpHeaders({
                         'Content-Type': 'application/x-www-form-urlencoded'
                     });
-                    return _this.http.post(logsUrl, _this.jsonToURLEncoded(body), { headers: headers }).toPromise();
+                    return _this.http.post(logsUrl, _this.jsonToURLEncoded(body), { headers: headers, responseType: 'text' }).toPromise();
                 })
                     .then(function (result) {
                     resolve(true);
