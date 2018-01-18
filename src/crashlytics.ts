@@ -64,7 +64,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
     /**
      * Messages got from:
      * https://github.com/ionic-team/ionic/blob/ae4be669bb96de01ff2224ff36da89e9cde12c7f/src/navigation/nav-controller-base.ts#L322
-     * 
+     *
      */
     if (
       message.includes('navigation stack needs at least one root page') ||
