@@ -16,10 +16,10 @@ import { MMobile } from './providers/mmobile';
     MyComponent
   ]
 })
-export class OkodeAppCommonModule {
+export class OkodeCommonModule {
   static forRoot(): ModuleWithProviders {
     return {
-      ngModule: OkodeAppCommonModule,
+      ngModule: OkodeCommonModule,
       providers: [ Config, CrashlyticsErrorHandler, Log, MMobile ]
     };
   }
