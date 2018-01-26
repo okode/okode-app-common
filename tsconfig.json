@@ -1,26 +1,22 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "lib": [
-      "dom",
-      "es2015"
-    ],
     "module": "es2015",
+    "target": "es5",
     "moduleResolution": "node",
     "sourceMap": true,
-    "target": "es5",
-    "declaration": true
+    "inlineSources": true,
+    "declaration": true,
+    "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "lib": ["dom", "es2015"],
+    "outDir": "dist"
   },
-  "include": [
-    "src/**/**.ts",
-    "node_modules/cordova-fabric-plugin/typings/*.d.ts"
+  "exclude": [
+    "node_modules",
+    "dist",
+    "scripts"
   ],
-  "compileOnSave": false,
-  "atom": {
-    "rewriteTsconfig": false
+  "angularCompilerOptions": {
+    "genDir": "aot"
   }
 }
