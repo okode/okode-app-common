@@ -4,16 +4,16 @@ import { Config } from './providers/config';
 import { CrashlyticsErrorHandler } from './providers/crashlytics';
 import { Log } from './providers/log';
 import { MMobile } from './providers/mmobile';
-var OkodeAppCommonModule = /** @class */ (function () {
-    function OkodeAppCommonModule() {
+var OkodeCommonModule = /** @class */ (function () {
+    function OkodeCommonModule() {
     }
-    OkodeAppCommonModule.forRoot = function () {
+    OkodeCommonModule.forRoot = function () {
         return {
-            ngModule: OkodeAppCommonModule,
+            ngModule: OkodeCommonModule,
             providers: [Config, CrashlyticsErrorHandler, Log, MMobile]
         };
     };
-    OkodeAppCommonModule.decorators = [
+    OkodeCommonModule.decorators = [
         { type: NgModule, args: [{
                     declarations: [
                         // declare all components that your module uses
@@ -26,8 +26,8 @@ var OkodeAppCommonModule = /** @class */ (function () {
                 },] },
     ];
     /** @nocollapse */
-    OkodeAppCommonModule.ctorParameters = function () { return []; };
-    return OkodeAppCommonModule;
+    OkodeCommonModule.ctorParameters = function () { return []; };
+    return OkodeCommonModule;
 }());
-export { OkodeAppCommonModule };
-//# sourceMappingURL=okode-app-common.js.map
+export { OkodeCommonModule };
+//# sourceMappingURL=okode-common.js.map
