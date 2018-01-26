@@ -18,7 +18,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 
 // Import Okode App Common module
-import { OkodeAppCommonModule } from '@okode/common';
+import { OkodeCommonModule } from '@okode/common';
 
 @NgModule({
   declarations: [
@@ -26,7 +26,7 @@ import { OkodeAppCommonModule } from '@okode/common';
     HomePage
   ],
   imports: [
-    OkodeAppCommonModule.forRoot(), // Put Okode App Common module here
+    OkodeCommonModule.forRoot(), // Put Okode App Common module here
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
