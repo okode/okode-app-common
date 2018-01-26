@@ -26,8 +26,8 @@ import { OkodeAppCommonModule } from '@okode/common';
     HomePage
   ],
   imports: [
-    IonicModule.forRoot(MyApp),
-    OkodeAppCommonModule // Put Okode App Common module here
+    OkodeAppCommonModule.forRoot(), // Put Okode App Common module here
+    IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
