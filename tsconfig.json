@@ -11,10 +11,9 @@
     "lib": ["dom", "es2015"],
     "outDir": "dist"
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "scripts"
+  "include": [
+    "src/**/**.ts",
+    "node_modules/cordova-fabric-plugin/typings/*.d.ts"
   ],
   "angularCompilerOptions": {
     "genDir": "aot"
