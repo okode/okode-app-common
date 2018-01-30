@@ -4,6 +4,7 @@ import { Config } from './providers/config';
 import { CrashlyticsErrorHandler } from './providers/crashlytics';
 import { Log } from './providers/log';
 import { MMobile } from './providers/mmobile';
+import { IonicStorageModule } from '@ionic/storage';
 var OkodeCommonModule = /** @class */ (function () {
     function OkodeCommonModule() {
     }
@@ -18,6 +19,9 @@ var OkodeCommonModule = /** @class */ (function () {
                     declarations: [
                         // declare all components that your module uses
                         MyComponent
+                    ],
+                    imports: [
+                        IonicStorageModule.forRoot()
                     ],
                     exports: [
                         // export the component(s) that you want others to be able to use

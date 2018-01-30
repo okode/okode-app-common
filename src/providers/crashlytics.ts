@@ -3,14 +3,18 @@ import { Platform, IonicErrorHandler } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
 import { Log } from './log';
+import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class CrashlyticsErrorHandler extends IonicErrorHandler {
 
+  private static APP_CRASH_DETECTED_KEY = 'OKODE_APP_CRASH_DETECTED';
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private log: Log
+    private log: Log,
+    private storage: Storage
   ) {
     super();
   }
@@ -23,8 +27,19 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
     }
   }
 
+  async getAndClearCrashDetected() {
+    try {
+      let keys = await this.storage.keys();
+      let appWasCrashed = false;
+      if (keys.indexOf(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY)) appWasCrashed = true;
+      await this.storage.remove(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY);
+      return appWasCrashed;
+    } catch (err) {}
+    return false;
+  }
+
   private sendError(error: any) {
-    console.log('TODO: Add block UI for preventing use while sending report to Crashlytics');
+    this.log.e('TODO: Add block UI for preventing use while sending report to Crashlytics');
     if (typeof fabric != 'undefined') {
       if (error instanceof Error) {
         StackTrace.fromError(error).then(frames => {
@@ -39,7 +54,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
             fabric.Crashlytics.sendNonFatalCrash(`${error.name}: ${error.message}\n\n${report}`);
           }
           this.displayErrorMsgAndReload();
-        }).catch(reason => console.log('Crashlytics catch: ' + reason));
+        }).catch(reason => this.log.e('Crashlytics catch: ' + reason));
       } else {
         fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error));
         this.displayErrorMsgAndReload();
@@ -48,9 +63,15 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private displayErrorMsgAndReload() {
-    console.log('The application has unexpectedly quit and will restart.');
-    this.splashScreen.show();
-    window.location.reload();
+    this.log.e('The application has unexpectedly quit and will restart.');
+    this.log.e(`Creating entry in local storage for ${CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY} = true`);
+    this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(() => {
+      this.splashScreen.show();
+      window.location.reload();
+    }).catch(() => {
+      this.splashScreen.show();
+      window.location.reload();
+    });
   }
 
   private isAnIgnorableError(error: any) {
