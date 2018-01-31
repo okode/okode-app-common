@@ -9,6 +9,8 @@ import { Storage } from '@ionic/storage';
 export class CrashlyticsErrorHandler extends IonicErrorHandler {
 
   private static APP_CRASH_DETECTED_KEY = 'OKODE_APP_CRASH_DETECTED';
+  private static APP_CRASH_MESSAGE_ES = 'La App ha detectado un error y se reiniciará.';
+  private static APP_CRASH_MESSAGE_EN = 'An error was detected, the App will restart.';
 
   constructor(
     private platform: Platform,
@@ -39,7 +41,6 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private sendError(error: any) {
-    this.log.e('TODO: Add block UI for preventing use while sending report to Crashlytics');
     if (typeof fabric != 'undefined') {
       if (error instanceof Error) {
         StackTrace.fromError(error).then(frames => {
@@ -63,7 +64,8 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private displayErrorMsgAndReload() {
-    this.log.e('The application has unexpectedly quit and will restart.');
+    alert(navigator.language.startsWith('es') ? CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES : CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
+    this.log.e(CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
     this.log.e(`Creating entry in local storage for ${CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY} = true`);
     this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(() => {
       this.splashScreen.show();
