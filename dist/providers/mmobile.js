@@ -11,12 +11,13 @@ var MMobile = /** @class */ (function () {
         this.device = device;
         this.storage = storage;
     }
-    MMobile.prototype.init = function (baseUrl, appName, version) {
+    MMobile.prototype.init = function (baseUrl, appName, version, jwtConfigName) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.baseUrl = baseUrl;
             _this.appName = appName;
             _this.version = version;
+            _this.jwtConfigName = jwtConfigName;
             _this.prepareLogs();
             var url = baseUrl + "/config/" + appName + "/" + version;
             _this.http.get(url).toPromise()
@@ -207,6 +208,15 @@ var MMobile = /** @class */ (function () {
         }
         else {
             throw ('Service was not found');
+        }
+    };
+    MMobile.prototype.getJwtLoginUrl = function () {
+        this.checkIfIsInitialized();
+        if (this.jwtConfigName) {
+            return this.baseUrl + "/jwt/login/" + this.appName + "/" + this.version + "/" + this.jwtConfigName;
+        }
+        else {
+            throw ('jwtConfigName service is not enabled');
         }
     };
     MMobile.prototype.isInitialized = function () {
