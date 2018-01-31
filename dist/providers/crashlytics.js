@@ -141,7 +141,7 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
                         });
                     }
                 }]
-        });
+        }).present();
     };
     CrashlyticsErrorHandler.prototype.isAnIgnorableError = function (error) {
         if (error && error.status == 500)

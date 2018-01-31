@@ -84,7 +84,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
           });
         }
       }]
-    });
+    }).present();
   }
 
   private isAnIgnorableError(error: any) {
