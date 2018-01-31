@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule, ModuleWithProviders, ErrorHandler } from '@angular/core';
 import { MyComponent } from './components/my-component';
 import { Config } from './providers/config';
 import { CrashlyticsErrorHandler } from './providers/crashlytics';
@@ -24,7 +24,12 @@ export class OkodeCommonModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: OkodeCommonModule,
-      providers: [ Config, CrashlyticsErrorHandler, Log, MMobile ]
+      providers: [
+        { provide: ErrorHandler, useClass: CrashlyticsErrorHandler },
+        Config,
+        Log,
+        MMobile
+      ]
     };
   }
 }

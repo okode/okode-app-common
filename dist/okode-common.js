@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { MyComponent } from './components/my-component';
 import { Config } from './providers/config';
 import { CrashlyticsErrorHandler } from './providers/crashlytics';
@@ -11,7 +11,12 @@ var OkodeCommonModule = /** @class */ (function () {
     OkodeCommonModule.forRoot = function () {
         return {
             ngModule: OkodeCommonModule,
-            providers: [Config, CrashlyticsErrorHandler, Log, MMobile]
+            providers: [
+                { provide: ErrorHandler, useClass: CrashlyticsErrorHandler },
+                Config,
+                Log,
+                MMobile
+            ]
         };
     };
     OkodeCommonModule.decorators = [
