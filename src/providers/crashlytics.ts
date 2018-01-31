@@ -1,5 +1,5 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { Platform, IonicErrorHandler } from 'ionic-angular';
+import { Platform, IonicErrorHandler, AlertController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
 import { Log } from './log';
@@ -16,7 +16,8 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private log: Log,
-    private storage: Storage
+    private storage: Storage,
+    private alertCtrl: AlertController
   ) {
     super();
   }
@@ -64,15 +65,25 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private displayErrorMsgAndReload() {
-    alert(navigator.language.startsWith('es') ? CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES : CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
-    this.log.e(CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
-    this.log.e(`Creating entry in local storage for ${CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY} = true`);
-    this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(() => {
-      this.splashScreen.show();
-      window.location.reload();
-    }).catch(() => {
-      this.splashScreen.show();
-      window.location.reload();
+    this.splashScreen.hide();
+    let isLangES = navigator.language.startsWith('es');
+    this.alertCtrl.create({
+      title: 'Error',
+      message: isLangES ? CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES : CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN,
+      buttons: [{
+        text: isLangES ? 'Aceptar' : 'OK',
+        handler: () => {
+          this.log.e(CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
+          this.log.e(`Creating entry in local storage for ${CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY} = true`);
+          this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(() => {
+            this.splashScreen.show();
+            window.location.reload();
+          }).catch(() => {
+            this.splashScreen.show();
+            window.location.reload();
+          });
+        }
+      }]
     });
   }
 

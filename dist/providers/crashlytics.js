@@ -44,19 +44,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { Injectable, isDevMode } from '@angular/core';
-import { Platform, IonicErrorHandler } from 'ionic-angular';
+import { Platform, IonicErrorHandler, AlertController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
 import { Log } from './log';
 import { Storage } from '@ionic/storage';
 var CrashlyticsErrorHandler = /** @class */ (function (_super) {
     __extends(CrashlyticsErrorHandler, _super);
-    function CrashlyticsErrorHandler(platform, splashScreen, log, storage) {
+    function CrashlyticsErrorHandler(platform, splashScreen, log, storage, alertCtrl) {
         var _this = _super.call(this) || this;
         _this.platform = platform;
         _this.splashScreen = splashScreen;
         _this.log = log;
         _this.storage = storage;
+        _this.alertCtrl = alertCtrl;
         return _this;
     }
     CrashlyticsErrorHandler.prototype.handleError = function (error) {
@@ -121,15 +122,25 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
     };
     CrashlyticsErrorHandler.prototype.displayErrorMsgAndReload = function () {
         var _this = this;
-        alert(navigator.language.startsWith('es') ? CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES : CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
-        this.log.e(CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
-        this.log.e("Creating entry in local storage for " + CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY + " = true");
-        this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(function () {
-            _this.splashScreen.show();
-            window.location.reload();
-        }).catch(function () {
-            _this.splashScreen.show();
-            window.location.reload();
+        this.splashScreen.hide();
+        var isLangES = navigator.language.startsWith('es');
+        this.alertCtrl.create({
+            title: 'Error',
+            message: isLangES ? CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES : CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN,
+            buttons: [{
+                    text: isLangES ? 'Aceptar' : 'OK',
+                    handler: function () {
+                        _this.log.e(CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
+                        _this.log.e("Creating entry in local storage for " + CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY + " = true");
+                        _this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(function () {
+                            _this.splashScreen.show();
+                            window.location.reload();
+                        }).catch(function () {
+                            _this.splashScreen.show();
+                            window.location.reload();
+                        });
+                    }
+                }]
         });
     };
     CrashlyticsErrorHandler.prototype.isAnIgnorableError = function (error) {
@@ -167,6 +178,7 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         { type: SplashScreen, },
         { type: Log, },
         { type: Storage, },
+        { type: AlertController, },
     ]; };
     return CrashlyticsErrorHandler;
 }(IonicErrorHandler));
