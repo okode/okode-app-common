@@ -33,7 +33,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
     try {
       let keys = await this.storage.keys();
       let appWasCrashed = false;
-      if (keys.indexOf(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY)) appWasCrashed = true;
+      if (keys.indexOf(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY) != -1) appWasCrashed = true;
       await this.storage.remove(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY);
       return appWasCrashed;
     } catch (err) {}
