@@ -8,6 +8,8 @@ export declare class CrashlyticsErrorHandler extends IonicErrorHandler {
     private log;
     private storage;
     private static APP_CRASH_DETECTED_KEY;
+    private static APP_CRASH_MESSAGE_ES;
+    private static APP_CRASH_MESSAGE_EN;
     constructor(platform: Platform, splashScreen: SplashScreen, log: Log, storage: Storage);
     handleError(error: any): void;
     getAndClearCrashDetected(): Promise<boolean>;

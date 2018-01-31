@@ -79,7 +79,7 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
                     case 1:
                         keys = _a.sent();
                         appWasCrashed = false;
-                        if (keys.indexOf(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY))
+                        if (keys.indexOf(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY) != -1)
                             appWasCrashed = true;
                         return [4 /*yield*/, this.storage.remove(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY)];
                     case 2:
@@ -95,7 +95,6 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
     };
     CrashlyticsErrorHandler.prototype.sendError = function (error) {
         var _this = this;
-        this.log.e('TODO: Add block UI for preventing use while sending report to Crashlytics');
         if (typeof fabric != 'undefined') {
             if (error instanceof Error) {
                 StackTrace.fromError(error).then(function (frames) {
@@ -122,7 +121,8 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
     };
     CrashlyticsErrorHandler.prototype.displayErrorMsgAndReload = function () {
         var _this = this;
-        this.log.e('The application has unexpectedly quit and will restart.');
+        alert(navigator.language.startsWith('es') ? CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES : CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
+        this.log.e(CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
         this.log.e("Creating entry in local storage for " + CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY + " = true");
         this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(function () {
             _this.splashScreen.show();
@@ -156,6 +156,8 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         return false;
     };
     CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY = 'OKODE_APP_CRASH_DETECTED';
+    CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES = 'La App ha detectado un error y se reiniciará.';
+    CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN = 'An error was detected, the App will restart.';
     CrashlyticsErrorHandler.decorators = [
         { type: Injectable },
     ];
