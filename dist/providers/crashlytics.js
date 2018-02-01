@@ -144,7 +144,7 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         }).present();
     };
     CrashlyticsErrorHandler.prototype.isAnIgnorableError = function (error) {
-        if (error && error.status == 500)
+        if (error !== undefined && error.status !== undefined && error.status >= 400)
             return true;
         return false;
     };

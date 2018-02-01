@@ -88,7 +88,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private isAnIgnorableError(error: any) {
-    if (error && error.status == 500) return true;
+    if (error !== undefined && error.status !== undefined && error.status >= 400) return true;
     return false;
   }
 
