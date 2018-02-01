@@ -5,6 +5,7 @@ import { CrashlyticsErrorHandler } from './providers/crashlytics';
 import { Log } from './providers/log';
 import { MMobile } from './providers/mmobile';
 import { IonicStorageModule } from '@ionic/storage';
+import { File } from '@ionic-native/file';
 var OkodeCommonModule = /** @class */ (function () {
     function OkodeCommonModule() {
     }
@@ -15,7 +16,8 @@ var OkodeCommonModule = /** @class */ (function () {
                 { provide: ErrorHandler, useClass: CrashlyticsErrorHandler },
                 Config,
                 Log,
-                MMobile
+                MMobile,
+                File
             ]
         };
     };

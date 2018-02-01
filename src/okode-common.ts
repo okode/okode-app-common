@@ -6,6 +6,7 @@ import { CrashlyticsErrorHandler } from './providers/crashlytics';
 import { Log } from './providers/log';
 import { MMobile } from './providers/mmobile';
 import { IonicStorageModule } from '@ionic/storage';
+import { File } from '@ionic-native/file';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ export class OkodeCommonModule {
         { provide: ErrorHandler, useClass: CrashlyticsErrorHandler },
         Config,
         Log,
-        MMobile
+        MMobile,
+        File
       ]
     };
   }
