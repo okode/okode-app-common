@@ -6,6 +6,7 @@ import { Log } from './providers/log';
 import { MMobile } from './providers/mmobile';
 import { IonicStorageModule } from '@ionic/storage';
 import { File } from '@ionic-native/file';
+import { Device } from '@ionic-native/device';
 var OkodeCommonModule = /** @class */ (function () {
     function OkodeCommonModule() {
     }
@@ -17,7 +18,8 @@ var OkodeCommonModule = /** @class */ (function () {
                 Config,
                 Log,
                 MMobile,
-                File
+                File,
+                Device
             ]
         };
     };

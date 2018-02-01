@@ -7,6 +7,7 @@ import { Log } from './providers/log';
 import { MMobile } from './providers/mmobile';
 import { IonicStorageModule } from '@ionic/storage';
 import { File } from '@ionic-native/file';
+import { Device } from '@ionic-native/device';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ export class OkodeCommonModule {
         Config,
         Log,
         MMobile,
-        File
+        File,
+        Device
       ]
     };
   }
