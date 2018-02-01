@@ -65,7 +65,7 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
             return;
         }
         _super.prototype.handleError.call(this, error);
-        if (!isDevMode() && !this.isAnIgnorableError(error)) {
+        if (!isDevMode() && !this.isIgnorableError(error)) {
             this.sendError(error);
         }
     };
@@ -143,7 +143,7 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
                 }]
         }).present();
     };
-    CrashlyticsErrorHandler.prototype.isAnIgnorableError = function (error) {
+    CrashlyticsErrorHandler.prototype.isIgnorableError = function (error) {
         if (error !== undefined && error.status !== undefined && error.status >= 400)
             return true;
         return false;

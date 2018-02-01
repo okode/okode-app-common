@@ -25,7 +25,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   handleError(error: any) {
     if (this.isIgnorableNavError(error)) { return; }
     super.handleError(error);
-    if (!isDevMode() && !this.isAnIgnorableError(error)) {
+    if (!isDevMode() && !this.isIgnorableError(error)) {
       this.sendError(error);
     }
   }
@@ -87,7 +87,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
     }).present();
   }
 
-  private isAnIgnorableError(error: any) {
+  private isIgnorableError(error: any) {
     if (error !== undefined && error.status !== undefined && error.status >= 400) return true;
     return false;
   }

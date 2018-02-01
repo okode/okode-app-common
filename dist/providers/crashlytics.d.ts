@@ -16,6 +16,6 @@ export declare class CrashlyticsErrorHandler extends IonicErrorHandler {
     getAndClearCrashDetected(): Promise<boolean>;
     private sendError(error);
     private displayErrorMsgAndReload();
-    private isAnIgnorableError(error);
+    private isIgnorableError(error);
     private isIgnorableNavError(error);
 }
