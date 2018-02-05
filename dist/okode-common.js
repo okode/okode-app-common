@@ -1,4 +1,5 @@
 import { NgModule, ErrorHandler } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { MyComponent } from './components/my-component';
 import { Config } from './providers/config';
 import { CrashlyticsErrorHandler } from './providers/crashlytics';
@@ -30,6 +31,7 @@ var OkodeCommonModule = /** @class */ (function () {
                         MyComponent
                     ],
                     imports: [
+                        HttpClientModule,
                         IonicStorageModule.forRoot()
                     ],
                     exports: [
