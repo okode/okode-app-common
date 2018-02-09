@@ -12,6 +12,7 @@ export class MMobile {
   private baseUrl: string;
   private appName: string;
   private version: string;
+  private jwtConfigName: string;
 
   private config: any;
 
@@ -30,11 +31,12 @@ export class MMobile {
     private storage: Storage
   )  {}
 
-  init(baseUrl: string, appName: string, version: string) {
+  init(baseUrl: string, appName: string, version: string, jwtConfigName?: string) {
     return new Promise<boolean>((resolve, reject) => {
       this.baseUrl = baseUrl;
       this.appName = appName;
       this.version = version;
+      this.jwtConfigName = jwtConfigName;
 
       this.prepareLogs();
 
@@ -240,6 +242,15 @@ export class MMobile {
       return (`${this.baseUrl}${service.prefix}/${this.appName}/${this.version}/${key}`);
     } else {
       throw('Service was not found');
+    }
+  }
+
+  getJwtLoginUrl() {
+    this.checkIfIsInitialized();
+    if (this.jwtConfigName) {
+      return `${this.baseUrl}/jwt/login/${this.appName}/${this.version}/${this.jwtConfigName}`;
+    } else {
+      throw('jwtConfigName service is not enabled');
     }
   }
 

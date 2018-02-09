@@ -1,19 +1,9 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 import { Injectable, isDevMode } from '@angular/core';
 import { MMobile } from './mmobile';
-var Log = (function () {
+var Log = /** @class */ (function () {
     function Log(mmobile) {
         this.mmobile = mmobile;
     }
-    Log_1 = Log;
     /**
      * Set user identifier to add it into the log lines
      * @param nuuma identifier
@@ -33,7 +23,7 @@ var Log = (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             optionalParams[_i - 1] = arguments[_i];
         }
-        this.print(Log_1.INFO_TAG, message, optionalParams);
+        this.print(Log.INFO_TAG, message, optionalParams);
     };
     Log.prototype.d = function (message) {
         var optionalParams = [];
@@ -41,7 +31,7 @@ var Log = (function () {
             optionalParams[_i - 1] = arguments[_i];
         }
         if (isDevMode()) {
-            this.print(Log_1.DEBUG_TAG, message, optionalParams);
+            this.print(Log.DEBUG_TAG, message, optionalParams);
         }
     };
     Log.prototype.w = function (message) {
@@ -49,14 +39,14 @@ var Log = (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             optionalParams[_i - 1] = arguments[_i];
         }
-        this.print(Log_1.WARNING_TAG, message, optionalParams);
+        this.print(Log.WARNING_TAG, message, optionalParams);
     };
     Log.prototype.e = function (message) {
         var optionalParams = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             optionalParams[_i - 1] = arguments[_i];
         }
-        this.print(Log_1.ERROR_TAG, message, optionalParams);
+        this.print(Log.ERROR_TAG, message, optionalParams);
     };
     Log.prototype.print = function (tag, message) {
         var optionalParams = [];
@@ -65,10 +55,10 @@ var Log = (function () {
         }
         var log = "" + tag + this.getUser() + ": " + message + " " + optionalParams.join(' ');
         switch (tag) {
-            case Log_1.ERROR_TAG:
+            case Log.ERROR_TAG:
                 console.error(log);
                 break;
-            case Log_1.WARNING_TAG:
+            case Log.WARNING_TAG:
                 console.warn(log);
                 break;
             default:
@@ -94,12 +84,14 @@ var Log = (function () {
     Log.DEBUG_TAG = '[DEBUG]';
     Log.WARNING_TAG = '[WARNING]';
     Log.ERROR_TAG = '[ERROR]';
-    Log = Log_1 = __decorate([
-        Injectable(),
-        __metadata("design:paramtypes", [MMobile])
-    ], Log);
+    Log.decorators = [
+        { type: Injectable },
+    ];
+    /** @nocollapse */
+    Log.ctorParameters = function () { return [
+        { type: MMobile, },
+    ]; };
     return Log;
-    var Log_1;
 }());
 export { Log };
 //# sourceMappingURL=log.js.map

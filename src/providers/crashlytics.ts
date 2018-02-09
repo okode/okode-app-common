@@ -1,16 +1,23 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { Platform, IonicErrorHandler } from 'ionic-angular';
+import { Platform, IonicErrorHandler, AlertController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
 import { Log } from './log';
+import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class CrashlyticsErrorHandler extends IonicErrorHandler {
 
+  private static APP_CRASH_DETECTED_KEY = 'OKODE_APP_CRASH_DETECTED';
+  private static APP_CRASH_MESSAGE_ES = 'La App ha detectado un error y se reiniciará.';
+  private static APP_CRASH_MESSAGE_EN = 'An error was detected, the App will restart.';
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private log: Log
+    private log: Log,
+    private storage: Storage,
+    private alertCtrl: AlertController
   ) {
     super();
   }
@@ -18,13 +25,23 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   handleError(error: any) {
     if (this.isIgnorableNavError(error)) { return; }
     super.handleError(error);
-    if (!isDevMode() && !this.isAnIgnorableError(error)) {
+    if (!isDevMode() && !this.isIgnorableError(error)) {
       this.sendError(error);
     }
   }
 
+  async getAndClearCrashDetected() {
+    try {
+      let keys = await this.storage.keys();
+      let appWasCrashed = false;
+      if (keys.indexOf(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY) != -1) appWasCrashed = true;
+      await this.storage.remove(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY);
+      return appWasCrashed;
+    } catch (err) {}
+    return false;
+  }
+
   private sendError(error: any) {
-    console.log('TODO: Add block UI for preventing use while sending report to Crashlytics');
     if (typeof fabric != 'undefined') {
       if (error instanceof Error) {
         StackTrace.fromError(error).then(frames => {
@@ -39,7 +56,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
             fabric.Crashlytics.sendNonFatalCrash(`${error.name}: ${error.message}\n\n${report}`);
           }
           this.displayErrorMsgAndReload();
-        }).catch(reason => console.log('Crashlytics catch: ' + reason));
+        }).catch(reason => this.log.e('Crashlytics catch: ' + reason));
       } else {
         fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error));
         this.displayErrorMsgAndReload();
@@ -48,13 +65,30 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private displayErrorMsgAndReload() {
-    console.log('The application has unexpectedly quit and will restart.');
-    this.splashScreen.show();
-    window.location.reload();
+    this.splashScreen.hide();
+    let isLangES = navigator.language.startsWith('es');
+    this.alertCtrl.create({
+      title: 'Error',
+      message: isLangES ? CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES : CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN,
+      buttons: [{
+        text: isLangES ? 'Aceptar' : 'OK',
+        handler: () => {
+          this.log.e(CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN);
+          this.log.e(`Creating entry in local storage for ${CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY} = true`);
+          this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(() => {
+            this.splashScreen.show();
+            window.location.reload();
+          }).catch(() => {
+            this.splashScreen.show();
+            window.location.reload();
+          });
+        }
+      }]
+    }).present();
   }
 
-  private isAnIgnorableError(error: any) {
-    if (error && error.status == 500) return true;
+  private isIgnorableError(error: any) {
+    if (error !== undefined && error.status !== undefined && error.status >= 400) return true;
     return false;
   }
 

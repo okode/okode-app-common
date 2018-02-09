@@ -1,12 +1,3 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -48,7 +39,7 @@ import { AppVersion } from '@ionic-native/app-version';
 import { HttpClient } from '@angular/common/http';
 import { ActionSheetController, ToastController, Platform } from 'ionic-angular';
 import { Log } from './log';
-var Config = (function () {
+var Config = /** @class */ (function () {
     function Config(platform, storage, appVersion, http, actionSheetCtrl, toastCtrl, log) {
         this.platform = platform;
         this.storage = storage;
@@ -62,7 +53,6 @@ var Config = (function () {
         this.readyPromiseResolve = [];
         this.readyPromiseReject = [];
     }
-    Config_1 = Config;
     Config.prototype.ready = function () {
         var _this = this;
         if (this.isReady)
@@ -79,12 +69,12 @@ var Config = (function () {
     Config.prototype.initConfigs = function () {
         var _this = this;
         this.http
-            .get(Config_1.CONFIG_JSON_PATH)
+            .get(Config.CONFIG_JSON_PATH)
             .subscribe(function (res) {
             var configs = res;
             if (configs == null || Object.keys(configs).length == 0) {
                 _this.readyPromiseReject.forEach(function (reject) { return reject(); });
-                _this.log.i("Config fails: '" + Config_1.CONFIG_JSON_PATH + "' is empty or invalid");
+                _this.log.i("Config fails: '" + Config.CONFIG_JSON_PATH + "' is empty or invalid");
                 return;
             }
             var environments = Object.keys(configs).filter(function (environment) { return environment !== 'default'; });
@@ -93,7 +83,7 @@ var Config = (function () {
             }
             else {
                 _this.storage.ready().then(function () {
-                    _this.storage.get(Config_1.ENVIRONMENT_KEY).then(function (storedEnvironment) {
+                    _this.storage.get(Config.ENVIRONMENT_KEY).then(function (storedEnvironment) {
                         if (storedEnvironment == null) {
                             if (environments.length > 1) {
                                 _this.log.i('No saved environment detected, will prompt user for selection');
@@ -113,7 +103,7 @@ var Config = (function () {
             }
         }, function (err) {
             _this.readyPromiseReject.forEach(function (reject) { return reject(); });
-            _this.log.i("Config fails: Not found '" + Config_1.CONFIG_JSON_PATH + "'");
+            _this.log.i("Config fails: Not found '" + Config.CONFIG_JSON_PATH + "'");
         });
     };
     Config.prototype.showEnvironmentActionSheet = function (environments, configs) {
@@ -143,7 +133,7 @@ var Config = (function () {
         }
         if (save) {
             this.log.i("Saving environment: " + environment);
-            this.storage.set(Config_1.ENVIRONMENT_KEY, environment);
+            this.storage.set(Config.ENVIRONMENT_KEY, environment);
         }
         this.isReady = true;
         this.readyPromiseResolve.forEach(function (resolve) { return resolve(); });
@@ -185,7 +175,7 @@ var Config = (function () {
                     case 0: return [4 /*yield*/, this.platform.ready()];
                     case 1:
                         _a.sent();
-                        appVersion = Config_1.BROWSER_VERSION;
+                        appVersion = Config.BROWSER_VERSION;
                         if (!this.platform.is('cordova')) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.appVersion.getVersionNumber().then(function (version) { return version; })];
                     case 2:
@@ -217,18 +207,20 @@ var Config = (function () {
     Config.ENVIRONMENT_KEY = 'configEnvironmentKey';
     Config.CONFIG_JSON_PATH = 'assets/config/config.json';
     Config.BROWSER_VERSION = 'Browser version';
-    Config = Config_1 = __decorate([
-        Injectable(),
-        __metadata("design:paramtypes", [Platform,
-            Storage,
-            AppVersion,
-            HttpClient,
-            ActionSheetController,
-            ToastController,
-            Log])
-    ], Config);
+    Config.decorators = [
+        { type: Injectable },
+    ];
+    /** @nocollapse */
+    Config.ctorParameters = function () { return [
+        { type: Platform, },
+        { type: Storage, },
+        { type: AppVersion, },
+        { type: HttpClient, },
+        { type: ActionSheetController, },
+        { type: ToastController, },
+        { type: Log, },
+    ]; };
     return Config;
-    var Config_1;
 }());
 export { Config };
 //# sourceMappingURL=config.js.map

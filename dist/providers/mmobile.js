@@ -1,32 +1,23 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
-var MMobile = (function () {
+var MMobile = /** @class */ (function () {
     function MMobile(http, file, device, storage) {
         this.http = http;
         this.file = file;
         this.device = device;
         this.storage = storage;
     }
-    MMobile_1 = MMobile;
-    MMobile.prototype.init = function (baseUrl, appName, version) {
+    MMobile.prototype.init = function (baseUrl, appName, version, jwtConfigName) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.baseUrl = baseUrl;
             _this.appName = appName;
             _this.version = version;
+            _this.jwtConfigName = jwtConfigName;
             _this.prepareLogs();
             var url = baseUrl + "/config/" + appName + "/" + version;
             _this.http.get(url).toPromise()
@@ -34,10 +25,10 @@ var MMobile = (function () {
                 _this.config = result;
                 _this.storage.ready()
                     .then(function () {
-                    return _this.storage.set(MMobile_1.MMOBILE_CONFIG, _this.config);
+                    return _this.storage.set(MMobile.MMOBILE_CONFIG, _this.config);
                 })
                     .then(function () {
-                    return _this.storage.set(MMobile_1.LAST_UPDATED_KEY, new Date());
+                    return _this.storage.set(MMobile.LAST_UPDATED_KEY, new Date());
                 })
                     .then(function () {
                     resolve(true);
@@ -47,7 +38,7 @@ var MMobile = (function () {
                 _this.printLog("Error downloading MMobile config. Check it out: " + url);
                 _this.storage.ready()
                     .then(function () {
-                    return _this.storage.get(MMobile_1.MMOBILE_CONFIG);
+                    return _this.storage.get(MMobile.MMOBILE_CONFIG);
                 })
                     .then(function (config) {
                     if (config != null) {
@@ -55,16 +46,16 @@ var MMobile = (function () {
                         resolve(false);
                     }
                     else {
-                        _this.http.get(MMobile_1.INITIAL_CONFIG_PATH).toPromise()
+                        _this.http.get(MMobile.INITIAL_CONFIG_PATH).toPromise()
                             .then(function (result) {
                             _this.config = result;
                             _this.storage.ready()
                                 .then(function () {
-                                return _this.storage.get(MMobile_1.LAST_UPDATED_KEY);
+                                return _this.storage.get(MMobile.LAST_UPDATED_KEY);
                             })
                                 .then(function (lastUpdatedDate) {
                                 if (lastUpdatedDate == null) {
-                                    return _this.storage.set(MMobile_1.LAST_UPDATED_KEY, new Date());
+                                    return _this.storage.set(MMobile.LAST_UPDATED_KEY, new Date());
                                 }
                                 else {
                                     return Promise.resolve();
@@ -154,7 +145,7 @@ var MMobile = (function () {
         return new Promise(function (resolve, reject) {
             _this.storage.ready()
                 .then(function () {
-                return _this.storage.get(MMobile_1.LAST_UPDATED_KEY);
+                return _this.storage.get(MMobile.LAST_UPDATED_KEY);
             })
                 .then(function (date) {
                 resolve(new Date(date));
@@ -167,7 +158,7 @@ var MMobile = (function () {
     MMobile.prototype.writeLog = function (log) {
         var _this = this;
         var message = ">>>>>>> " + this.getFormattedDateWithHour() + ": " + log + '\n';
-        this.file.writeFile("" + this.file.dataDirectory + MMobile_1.LOGS_DIR + "/", this.getLogsFileName(), message, { append: true })
+        this.file.writeFile("" + this.file.dataDirectory + MMobile.LOGS_DIR + "/", this.getLogsFileName(), message, { append: true })
             .catch(function (err) {
             _this.printLog("Error writing log to file. Discarding it. Reason: " + JSON.stringify(err));
         });
@@ -177,9 +168,9 @@ var MMobile = (function () {
         this.checkIfIsInitialized();
         return new Promise(function (resolve, reject) {
             if (_this.isLogsEnabled()) {
-                _this.file.readAsText("" + _this.file.dataDirectory + MMobile_1.LOGS_DIR + "/", _this.getLogsFileName())
+                _this.file.readAsText("" + _this.file.dataDirectory + MMobile.LOGS_DIR + "/", _this.getLogsFileName())
                     .then(function (log) {
-                    var logsUrl = _this.baseUrl + "/services/public/" + _this.appName + "/" + _this.version + "/" + MMobile_1.LOGS_SERVICE_KEY;
+                    var logsUrl = _this.baseUrl + "/services/public/" + _this.appName + "/" + _this.version + "/" + MMobile.LOGS_SERVICE_KEY;
                     var body = {
                         'rawlog': btoa(log),
                         'deviceId': deviceName
@@ -206,8 +197,8 @@ var MMobile = (function () {
     MMobile.prototype.isLogsEnabled = function () {
         this.checkIfIsInitialized();
         return (this.config.services !== null
-            && this.config.services[MMobile_1.LOGS_SERVICE_KEY] !== null
-            && this.config.services[MMobile_1.LOGS_SERVICE_KEY] !== null);
+            && this.config.services[MMobile.LOGS_SERVICE_KEY] !== null
+            && this.config.services[MMobile.LOGS_SERVICE_KEY] !== null);
     };
     MMobile.prototype.getServiceUrl = function (key) {
         this.checkIfIsInitialized();
@@ -219,6 +210,15 @@ var MMobile = (function () {
             throw ('Service was not found');
         }
     };
+    MMobile.prototype.getJwtLoginUrl = function () {
+        this.checkIfIsInitialized();
+        if (this.jwtConfigName) {
+            return this.baseUrl + "/jwt/login/" + this.appName + "/" + this.version + "/" + this.jwtConfigName;
+        }
+        else {
+            throw ('jwtConfigName service is not enabled');
+        }
+    };
     MMobile.prototype.isInitialized = function () {
         return this.config != null;
     };
@@ -227,15 +227,15 @@ var MMobile = (function () {
     };
     MMobile.prototype.prepareLogs = function () {
         var _this = this;
-        this.file.checkDir(this.file.dataDirectory, MMobile_1.LOGS_DIR)
+        this.file.checkDir(this.file.dataDirectory, MMobile.LOGS_DIR)
             .then(function () {
             // Logs directory exists. Check if the file is created for today
-            _this.file.checkFile("" + _this.file.dataDirectory + MMobile_1.LOGS_DIR + "/", _this.getLogsFileName())
+            _this.file.checkFile("" + _this.file.dataDirectory + MMobile.LOGS_DIR + "/", _this.getLogsFileName())
                 .then(function () {
                 // Logs file exists for today, nothing to do
             })
                 .catch(function (err) {
-                _this.file.removeRecursively(_this.file.dataDirectory, MMobile_1.LOGS_DIR)
+                _this.file.removeRecursively(_this.file.dataDirectory, MMobile.LOGS_DIR)
                     .then(function () {
                     _this.prepareLogs();
                 });
@@ -246,9 +246,9 @@ var MMobile = (function () {
                 _this.printLog("Cordova not enabled. Discarding it. Reason: " + JSON.stringify(err));
                 return;
             }
-            _this.file.createDir(_this.file.dataDirectory, MMobile_1.LOGS_DIR, false)
+            _this.file.createDir(_this.file.dataDirectory, MMobile.LOGS_DIR, false)
                 .then(function () {
-                _this.file.createFile("" + _this.file.dataDirectory + MMobile_1.LOGS_DIR + "/", _this.getLogsFileName(), true);
+                _this.file.createFile("" + _this.file.dataDirectory + MMobile.LOGS_DIR + "/", _this.getLogsFileName(), true);
             });
         });
     };
@@ -294,15 +294,17 @@ var MMobile = (function () {
     MMobile.LOGS_SERVICE_KEY = 'MMOBILE_sendLogs';
     MMobile.LAST_UPDATED_KEY = 'MMOBILE_lastUpdated';
     MMobile.MMOBILE_CONFIG = 'MMOBILE_config';
-    MMobile = MMobile_1 = __decorate([
-        Injectable(),
-        __metadata("design:paramtypes", [HttpClient,
-            File,
-            Device,
-            Storage])
-    ], MMobile);
+    MMobile.decorators = [
+        { type: Injectable },
+    ];
+    /** @nocollapse */
+    MMobile.ctorParameters = function () { return [
+        { type: HttpClient, },
+        { type: File, },
+        { type: Device, },
+        { type: Storage, },
+    ]; };
     return MMobile;
-    var MMobile_1;
 }());
 export { MMobile };
 //# sourceMappingURL=mmobile.js.map
