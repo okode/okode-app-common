@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
+import { Logger } from './logger';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -11,8 +12,11 @@ export class MMobile {
   private baseUrl: string;
   private appName: string;
   private version: string;
+  private jwtConfigName: string;
 
   private config: any;
+
+  private logger: Logger;
 
   private static readonly INITIAL_CONFIG_PATH = 'assets/config/mmobileInitialConfig.json';
   private static readonly LOGS_DIR = 'mmobilelogs';
@@ -20,15 +24,19 @@ export class MMobile {
   private static readonly LAST_UPDATED_KEY = 'MMOBILE_lastUpdated';
   private static readonly MMOBILE_CONFIG = 'MMOBILE_config';
 
-  constructor(private http: HttpClient, private file: File, private device: Device, private storage: Storage)  {
+  constructor(
+    private http: HttpClient,
+    private file: File,
+    private device: Device,
+    private storage: Storage
+  )  {}
 
-  }
-
-  init(baseUrl: string, appName: string, version: string) {
+  init(baseUrl: string, appName: string, version: string, jwtConfigName?: string) {
     return new Promise<boolean>((resolve, reject) => {
       this.baseUrl = baseUrl;
       this.appName = appName;
       this.version = version;
+      this.jwtConfigName = jwtConfigName;
 
       this.prepareLogs();
 
@@ -48,7 +56,7 @@ export class MMobile {
             });
         })
         .catch((error: any) => {
-          console.log(`Error downloading MMobile config. Reason: ${JSON.stringify(error)}`);
+          this.printLog(`Error downloading MMobile config. Check it out: ${url}`);
           this.storage.ready()
             .then(() => {
               return this.storage.get(MMobile.MMOBILE_CONFIG);
@@ -77,7 +85,7 @@ export class MMobile {
                     });
                 })
                 .catch((error: any) => {
-                  console.error(`Error loading MMobile initial config. Reason: ${JSON.stringify(error)}`);
+                  this.printLog(`Error loading MMobile initial config. Reason: ${JSON.stringify(error)}`);
                   reject();
                 });
               }
@@ -98,6 +106,11 @@ export class MMobile {
 
   getVersion() {
     return this.version;
+  }
+
+  getTimeout() {
+    this.checkIfIsInitialized();
+    return this.config.timeout;
   }
 
   isActive() {
@@ -181,7 +194,7 @@ export class MMobile {
     let message = `>>>>>>> ${this.getFormattedDateWithHour()}: ${log}` + '\n';
     this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), message, {append: true})
       .catch(err => {
-       console.log(`Error writing log to file. Discarding it. Reason: ${JSON.stringify(err)}`);
+        this.printLog(`Error writing log to file. Discarding it. Reason: ${JSON.stringify(err)}`);
       });
   }
 
@@ -199,7 +212,7 @@ export class MMobile {
           let headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded'
           });
-          return this.http.post(logsUrl, this.jsonToURLEncoded(body), { headers: headers }).toPromise();
+          return this.http.post(logsUrl, this.jsonToURLEncoded(body), { headers: headers, responseType: 'text' }).toPromise();
         })
         .then(result => {
           resolve(true);
@@ -232,8 +245,21 @@ export class MMobile {
     }
   }
 
+  getJwtLoginUrl() {
+    this.checkIfIsInitialized();
+    if (this.jwtConfigName) {
+      return `${this.baseUrl}/jwt/login/${this.appName}/${this.version}/${this.jwtConfigName}`;
+    } else {
+      throw('jwtConfigName service is not enabled');
+    }
+  }
+
   isInitialized() {
     return this.config != null;
+  }
+
+  setLogger(logger: Logger) {
+    this.logger = logger;
   }
 
   private prepareLogs() {
@@ -253,7 +279,7 @@ export class MMobile {
       })
       .catch(err => {
         if (err == 'cordova_not_available') {
-          console.log(`Cordova not enabled. Discarding it. Reason: ${JSON.stringify(err)}`);
+          this.printLog(`Cordova not enabled. Discarding it. Reason: ${JSON.stringify(err)}`);
           return;
         }
         this.file.createDir(this.file.dataDirectory, MMobile.LOGS_DIR, false)
@@ -291,6 +317,14 @@ export class MMobile {
   private checkIfIsInitialized() {
     if (this.config == null) {
       throw('MMobile is not initialized');
+    }
+  }
+
+  private printLog(message?: any, ...optionalParams: any[]) {
+    if (this.logger == null) {
+      console.log(message, optionalParams);
+    } else {
+      this.logger.i(message, optionalParams);
     }
   }
 }

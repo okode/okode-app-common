@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
+import { Logger } from './logger';
 import 'rxjs/add/operator/toPromise';
 export declare class MMobile {
     private http;
@@ -11,17 +12,20 @@ export declare class MMobile {
     private baseUrl;
     private appName;
     private version;
+    private jwtConfigName;
     private config;
+    private logger;
     private static readonly INITIAL_CONFIG_PATH;
     private static readonly LOGS_DIR;
     private static readonly LOGS_SERVICE_KEY;
     private static readonly LAST_UPDATED_KEY;
     private static readonly MMOBILE_CONFIG;
     constructor(http: HttpClient, file: File, device: Device, storage: Storage);
-    init(baseUrl: string, appName: string, version: string): Promise<boolean>;
+    init(baseUrl: string, appName: string, version: string, jwtConfigName?: string): Promise<boolean>;
     reloadConfig(): Promise<boolean>;
     getCustomConfig(): any;
     getVersion(): string;
+    getTimeout(): any;
     isActive(): any;
     getFeatures(): any;
     isDeviceLocked(): boolean;
@@ -30,10 +34,13 @@ export declare class MMobile {
     sendLogs(deviceName: string): Promise<boolean>;
     isLogsEnabled(): boolean;
     getServiceUrl(key: string): string;
+    getJwtLoginUrl(): string;
     isInitialized(): boolean;
+    setLogger(logger: Logger): void;
     private prepareLogs();
     private getFormattedDateWithHour();
     private getLogsFileName();
     private jsonToURLEncoded(jsonString);
     private checkIfIsInitialized();
+    private printLog(message?, ...optionalParams);
 }

@@ -13,6 +13,7 @@ export class Config {
 
   private static readonly ENVIRONMENT_KEY = 'configEnvironmentKey';
   private static readonly CONFIG_JSON_PATH = 'assets/config/config.json';
+  private static readonly BROWSER_VERSION: string = 'Browser version';
 
   private environment: string;
   private config: any;
@@ -132,24 +133,39 @@ export class Config {
     return this.updateToVersion;
   }
 
-  getVersionNumber() {
-    return this.platform.ready().then(() => {
-        if (this.platform.is('cordova')) {
-          let versionNumber = '';
-          return this.appVersion.getVersionNumber().then((version: string) => {
-            versionNumber = version;
-            return this.ready().then(() => {
-              let versionEnv = this.getConfig().versionEnv;
-              if (versionEnv != null) {
-                versionNumber += `-${versionEnv}`;
-              }
-              return versionNumber;
-            });
-          });
-        } else {
-          return 'Browser version';
-        }
-      });
+  async getAppName(browserAppName: string) {
+    await this.platform.ready();
+    if (!this.platform.is('cordova')) {
+        return Promise.resolve(browserAppName);
+    }
+    return this.appVersion.getAppName().then(name => name as string);
+  }
+
+  async getVersionNumber() {
+    await this.platform.ready();
+    let appVersion = Config.BROWSER_VERSION;
+    if (this.platform.is('cordova')) {
+        appVersion = await this.appVersion.getVersionNumber().then(version => version as string);
+    }
+    let versionEnv = this.getConfig().versionEnv;
+    if (versionEnv != null) {
+      appVersion += `-${versionEnv}`;
+    }
+    return appVersion;
+  }
+
+  getMMobileVersion() {
+    let config = this.getConfig();
+    let mmobileVersionNumber = config.mmobileConfigVersion;
+    if (mmobileVersionNumber == null) {
+      this.log.i('Unknown MMobile version. Set "mmobileConfigVersion" property on config.xml');
+      return null;
+    }
+    let versionEnv = config.versionEnv;
+    if (versionEnv != null) {
+        mmobileVersionNumber += `-${versionEnv}`;
+    }
+    return mmobileVersionNumber;
   }
 
 }
