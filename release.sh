@@ -46,6 +46,9 @@ fi
 # Bump version: package.json
 sed -i '' "s/\"version\": \"$CURRENT\"/\"version\": \"$NEXT\"/" package.json
 
+# Ensure package-lock.json is updated
+npm install
+
 # Update develop with new bumped version
 git commit -a -m"Bumped version ($NEXT) [ci skip]"
 git push
