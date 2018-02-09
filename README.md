@@ -8,7 +8,6 @@ Okode Common Library for Ionic and Angular as module using TypeScript. Supports 
 $ npm install ; npm run build
 ```
 
-
 ## Using Okode App Common module in an Ionic 2 app
 
 ```typescript
