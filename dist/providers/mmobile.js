@@ -207,7 +207,8 @@ var MMobile = /** @class */ (function () {
             return ("" + this.baseUrl + service.prefix + "/" + this.appName + "/" + this.version + "/" + key);
         }
         else {
-            throw ('Service was not found');
+            this.printLog("Service was not found: " + key);
+            return null;
         }
     };
     MMobile.prototype.getJwtLoginUrl = function () {
@@ -216,7 +217,8 @@ var MMobile = /** @class */ (function () {
             return this.baseUrl + "/jwt/login/" + this.appName + "/" + this.version + "/" + this.jwtConfigName;
         }
         else {
-            throw ('jwtConfigName service is not enabled');
+            this.printLog("jwtConfigName service is not enabled");
+            return null;
         }
     };
     MMobile.prototype.isInitialized = function () {
@@ -274,7 +276,7 @@ var MMobile = /** @class */ (function () {
     };
     MMobile.prototype.checkIfIsInitialized = function () {
         if (this.config == null) {
-            throw ('MMobile is not initialized');
+            throw ({ message: 'MMobile is not initialized', needsRestartApp: true });
         }
     };
     MMobile.prototype.printLog = function (message) {
