@@ -24,7 +24,11 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
 
   handleError(error: any) {
     if (this.isIgnorableNavError(error)) { return; }
-    super.handleError(error);
+    if (isDevMode() && error.rejection && error.rejection.needsRestartApp == true) {
+      this.restartApp();
+    } else {
+      super.handleError(error);
+    }
     if (!isDevMode() && !this.isIgnorableError(error)) {
       this.sendError(error);
     }
@@ -77,14 +81,18 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
           this.log.e(`Creating entry in local storage for ${CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY} = true`);
           this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(() => {
             this.splashScreen.show();
-            window.location.reload();
+            this.restartApp();
           }).catch(() => {
             this.splashScreen.show();
-            window.location.reload();
+            this.restartApp();
           });
         }
       }]
     }).present();
+  }
+
+  private restartApp() {
+    window.location.href = '/';
   }
 
   private isIgnorableError(error: any) {

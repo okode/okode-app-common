@@ -64,7 +64,12 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         if (this.isIgnorableNavError(error)) {
             return;
         }
-        _super.prototype.handleError.call(this, error);
+        if (isDevMode() && error.rejection && error.rejection.needsRestartApp == true) {
+            this.restartApp();
+        }
+        else {
+            _super.prototype.handleError.call(this, error);
+        }
         if (!isDevMode() && !this.isIgnorableError(error)) {
             this.sendError(error);
         }
@@ -134,14 +139,17 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
                         _this.log.e("Creating entry in local storage for " + CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY + " = true");
                         _this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(function () {
                             _this.splashScreen.show();
-                            window.location.reload();
+                            _this.restartApp();
                         }).catch(function () {
                             _this.splashScreen.show();
-                            window.location.reload();
+                            _this.restartApp();
                         });
                     }
                 }]
         }).present();
+    };
+    CrashlyticsErrorHandler.prototype.restartApp = function () {
+        window.location.href = '/';
     };
     CrashlyticsErrorHandler.prototype.isIgnorableError = function (error) {
         if (error !== undefined && error.status !== undefined && error.status >= 400)
