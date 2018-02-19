@@ -30,7 +30,7 @@ export declare class MMobile {
     getFeatures(): any;
     isDeviceLocked(): boolean;
     getLastUpdatedDate(): Promise<Date>;
-    writeLog(log: string): void;
+    writeLog(log: string): Promise<void>;
     sendLogs(deviceName: string): Promise<boolean>;
     isLogsEnabled(): boolean;
     getServiceUrl(key: string): string;
