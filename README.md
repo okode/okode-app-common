@@ -45,7 +45,7 @@ export class AppModule {}
 Allows caching GET responses adding custom header
 
 **1) Register provider in app @NgModule**
-```
+```typescript
   { provide: HTTP_CACHE_INTERCEPTOR_CONFIG, useValue: { minutes: 5, headerName: 'Cache-Response'} },
   { provide: HTTP_INTERCEPTORS, useClass: HttpCacheInterceptor, multi: true },
 ```
@@ -54,7 +54,7 @@ Allows caching GET responses adding custom header
 >- `headerName` default: `'Cache-Response'` (any value is valid, it only needs to be defined)
 
 **2) Add header to services that you want to cache**
-```
+```typescript
   headers = headers.append('Cache-Response', 'true');
 ````
 > This header will not be sent to the server
