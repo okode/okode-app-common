@@ -190,9 +190,9 @@ export class MMobile {
     });
   }
 
-  writeLog(log: string) {
+  async writeLog(log: string) {
     let message = `>>>>>>> ${this.getFormattedDateWithHour()}: ${log}` + '\n';
-    this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), message, {append: true})
+    await this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), message, {append: true})
       .catch(err => {
         this.printLog(`Error writing log to file. Discarding it. Reason: ${JSON.stringify(err)}`);
       });
