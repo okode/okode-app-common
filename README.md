@@ -42,19 +42,23 @@ export class AppModule {}
 
 ### HttpCacheInterceptor
 
-Allows caching GET responses adding custom header
+Allows caching GET responses
 
-**1) Register provider in app @NgModule**
+**Register provider in app @NgModule**
 ```typescript
-  { provide: HTTP_CACHE_INTERCEPTOR_CONFIG, useValue: { minutes: 5, headerName: 'Cache-Response'} },
+  { provide: HTTP_CACHE_INTERCEPTOR_DURATION_MINS, useValue: 5 },
   { provide: HTTP_INTERCEPTORS, useClass: HttpCacheInterceptor, multi: true },
 ```
->`HTTP_CACHE_INTERCEPTOR_CONFIG` is optional
->- `minutes` default: `null` (cache not expires)
->- `headerName` default: `'Cache-Response'` (any value is valid, it only needs to be defined)
+>`HTTP_CACHE_INTERCEPTOR_DURATION_MINS` (minutes number) is optional, default: `null` (cache not expires)
 
-**2) Add header to services that you want to cache**
+**Add header to services that you want to cache**
 ```typescript
-  headers = headers.append('Cache-Response', 'true');
+  headers = headers.append('Cache-Interceptor', 'cache-response');
 ````
-> This header will not be sent to the server
+>`Cache-Interceptor` header will not be sent to the server
+
+**Clear all cache responses**
+```typescript
+  headers = headers.append('Cache-Interceptor', 'clear-cache');
+````
+>`Cache-Interceptor` header will not be sent to the server

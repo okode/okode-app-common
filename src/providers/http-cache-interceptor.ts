@@ -2,12 +2,7 @@ import { Injectable, Inject, InjectionToken } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 
-export interface CacheConfig {
-  minutes: number;
-  headerName: string;
-}
-
-export const HTTP_CACHE_INTERCEPTOR_CONFIG = new InjectionToken<CacheConfig>('httpCache.config');
+export const HTTP_CACHE_INTERCEPTOR_DURATION_MINS = new InjectionToken<number>('httpCache.mins');
 
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {
@@ -15,26 +10,36 @@ export class HttpCacheInterceptor implements HttpInterceptor {
   private cache = new Map<string, { response: HttpResponse<any>, timestamp: number }>();
 
   private durationMins = null;
-  private headerName = 'Cache-Response';
+  private static readonly HEADER_NAME = 'Cache-Interceptor';
+  private static readonly HEADER_VALUE_CACHE_RESPONSE = 'cache-response';
+  private static readonly HEADER_VALUE_CACHE_CLEAR = 'clear-cache';
 
-  constructor(@Inject(HTTP_CACHE_INTERCEPTOR_CONFIG) config: CacheConfig) {
-    this.headerName = config.headerName || this.headerName;
-    this.durationMins = config.minutes || null;
+  constructor(@Inject(HTTP_CACHE_INTERCEPTOR_DURATION_MINS) duration: number) {
+    this.durationMins = duration || null;
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (req.method !== 'GET' || !req.headers.get(this.headerName)) {
+    let headerValue = req.headers.get(HttpCacheInterceptor.HEADER_NAME);
+    req = req.clone({ headers: req.headers.delete(HttpCacheInterceptor.HEADER_NAME) });
+
+    if (req.method !== 'GET' || !headerValue) {
       return next.handle(req);
     }
-    req = req.clone({ headers: req.headers.delete(this.headerName) });
+
+    if (headerValue == HttpCacheInterceptor.HEADER_VALUE_CACHE_CLEAR) {
+      this.cache.clear();
+      return next.handle(req);
+    }
 
     const cachedResponse = this.cache.get(req.urlWithParams);
     if (cachedResponse && !this.isReponseExpired(cachedResponse)) {
       return Observable.of(cachedResponse.response);
     }
 
+    const cacheResponse = (headerValue == HttpCacheInterceptor.HEADER_VALUE_CACHE_RESPONSE);
+
     return next.handle(req).do(event => {
-      if (event instanceof HttpResponse) {
+      if (event instanceof HttpResponse && cacheResponse) {
         this.cache.set(req.urlWithParams, { response: event.clone(), timestamp: Date.now() });
       }
     });
