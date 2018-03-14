@@ -33,7 +33,7 @@ export declare class MMobile {
     writeLog(log: string): Promise<void>;
     sendLogs(deviceName: string): Promise<boolean>;
     isLogsEnabled(): boolean;
-    getServiceUrl(key: string): string;
+    getServiceUrl(key: string): any;
     getJwtLoginUrl(): string;
     isInitialized(): boolean;
     setLogger(logger: Logger): void;
