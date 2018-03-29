@@ -239,6 +239,9 @@ export class MMobile {
     this.checkIfIsInitialized();
     let service = this.config.services[key];
     if (service != null) {
+      if (service.mediated == false) {
+        return service.path;
+      }
       return (`${this.baseUrl}${service.prefix}/${this.appName}/${this.version}/${key}`);
     } else {
       this.printLog(`Service was not found: ${key}`);
