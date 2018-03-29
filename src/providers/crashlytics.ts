@@ -92,7 +92,13 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private restartApp() {
-    window.location.href = '/';
+    let href = window.location.href;
+    if (href.indexOf('/www/index.html') > 0) {
+      href = href.substring(0, href.indexOf('/www/index.html') + '/www/index.html'.length);
+    } else {
+      href = '/';
+    }
+    window.location.href = href;
   }
 
   private isIgnorableError(error: any) {
