@@ -149,7 +149,14 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         }).present();
     };
     CrashlyticsErrorHandler.prototype.restartApp = function () {
-        window.location.href = '/';
+        var href = window.location.href;
+        if (href.indexOf('/www/index.html') > 0) {
+            href = href.substring(0, href.indexOf('/www/index.html') + '/www/index.html'.length);
+        }
+        else {
+            href = '/';
+        }
+        window.location.href = href;
     };
     CrashlyticsErrorHandler.prototype.isIgnorableError = function (error) {
         if (error !== undefined && error.status !== undefined && error.status >= 400)
