@@ -3,11 +3,12 @@ import { ViewController, NavParams } from 'ionic-angular';
 
 @Component({
   selector: 'modal-wrapper',
-  template: `<ion-nav [root]="root"></ion-nav>`
+  template: `<ion-nav [root]="root" [rootParams]="rootParams"></ion-nav>`
 })
 export class ModalWrapperComponent {
 
   root: any;
+  rootParams: any;
 
   constructor(
     public viewCtrl: ViewController,
@@ -16,6 +17,7 @@ export class ModalWrapperComponent {
 
   ngOnInit() {
     this.root = this.navParams.get('root');
+    this.rootParams = this.navParams.get('params');
   }
 
 }

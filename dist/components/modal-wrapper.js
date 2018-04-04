@@ -7,11 +7,12 @@ var ModalWrapperComponent = /** @class */ (function () {
     }
     ModalWrapperComponent.prototype.ngOnInit = function () {
         this.root = this.navParams.get('root');
+        this.rootParams = this.navParams.get('params');
     };
     ModalWrapperComponent.decorators = [
         { type: Component, args: [{
                     selector: 'modal-wrapper',
-                    template: "<ion-nav [root]=\"root\"></ion-nav>"
+                    template: "<ion-nav [root]=\"root\" [rootParams]=\"rootParams\"></ion-nav>"
                 },] },
     ];
     /** @nocollapse */
