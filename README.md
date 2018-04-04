@@ -83,7 +83,7 @@ import { OkodeCommonModule } from '@okode/common';
 import { ModalWrapperComponent } from '@okode/common';
 
 this.modalCtrl.create(ModalWrapperComponent, { root: 'my-page' }).present();
-// OR
+// OR with params (optional)
 this.modalCtrl.create(ModalWrapperComponent, { root: 'my-page', params: { foo: 'bar' } }).present();
 ```
 >From any point of the new modal `NavController`, we can close the entire modal nav stack returning data (or not) to the point where the modal was created (using `this.navCtrl.parent.getActive().dismiss()`)
