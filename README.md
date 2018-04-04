@@ -38,9 +38,9 @@ import { OkodeCommonModule } from '@okode/common';
 export class AppModule {}
 ```
 
-## Using optional Okode App Common providers
+# Providers (optionals)
 
-### HttpCacheInterceptor
+## HttpCacheInterceptor
 
 Allows caching GET responses
 
@@ -62,3 +62,27 @@ Allows caching GET responses
   headers = headers.append('Cache-Interceptor', 'clear-cache');
 ````
 >`Cache-Interceptor` header will not be sent to the server
+
+# Components
+
+## ModalWrapperComponent
+
+Wrap the modal in a new ion-nav solving certain navigation problems (popToRoot in multiple modal levels, iOS statusbar in pushed pages inside modal, etc)
+
+**Add module in inports**
+```typescript
+import { OkodeCommonModule } from '@okode/common';
+@NgModule({
+  imports: [
+    OkodeCommonModule
+```
+
+**Usage**
+```typescript
+
+import { ModalWrapperComponent } from '@okode/common';
+
+this.modalCtrl.create(ModalWrapperComponent, { root: 'my-page' }).create();
+// OR
+this.modalCtrl.create(ModalWrapperComponent, { root: 'my-page', params: { foo: 'bar' } }).create();
+```
