@@ -31,7 +31,7 @@ export class MMobile {
     private storage: Storage
   )  {}
 
-  init(baseUrl: string, appName: string, version: string, jwtConfigName?: string) {
+  init(baseUrl: string, appName: string, version: string, jwtConfigName?: string, timeout?: number) {
     return new Promise<boolean>((resolve, reject) => {
       this.baseUrl = baseUrl;
       this.appName = appName;
@@ -41,7 +41,11 @@ export class MMobile {
       this.prepareLogs();
 
       let url = `${baseUrl}/config/${appName}/${version}`;
-      this.http.get(url).toPromise()
+      let observable = this.http.get(url);
+      if (timeout) {
+        observable = observable.timeout(timeout);
+      }
+      observable.toPromise()
         .then(result => {
           this.config = result;
           this.storage.ready()
