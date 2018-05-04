@@ -46,7 +46,7 @@ var MMobile = /** @class */ (function () {
         this.device = device;
         this.storage = storage;
     }
-    MMobile.prototype.init = function (baseUrl, appName, version, jwtConfigName) {
+    MMobile.prototype.init = function (baseUrl, appName, version, jwtConfigName, timeout) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.baseUrl = baseUrl;
@@ -55,7 +55,11 @@ var MMobile = /** @class */ (function () {
             _this.jwtConfigName = jwtConfigName;
             _this.prepareLogs();
             var url = baseUrl + "/config/" + appName + "/" + version;
-            _this.http.get(url).toPromise()
+            var observable = _this.http.get(url);
+            if (timeout) {
+                observable = observable.timeout(timeout);
+            }
+            observable.toPromise()
                 .then(function (result) {
                 _this.config = result;
                 _this.storage.ready()
