@@ -38,9 +38,9 @@ import { OkodeCommonModule } from '@okode/common';
 export class AppModule {}
 ```
 
-## Using optional Okode App Common providers
+# Providers (optionals)
 
-### HttpCacheInterceptor
+## HttpCacheInterceptor
 
 Allows caching GET responses
 
@@ -62,3 +62,40 @@ Allows caching GET responses
   headers = headers.append('Cache-Interceptor', 'clear-cache');
 ````
 >`Cache-Interceptor` header will not be sent to the server
+
+# Components
+
+## ModalWrapperComponent
+
+Wrap the modal in a new ion-nav solving certain navigation problems (popToRoot in multiple modal levels, iOS statusbar in pushed pages inside modal, etc)
+
+**Add module in inports**
+```typescript
+import { OkodeCommonModule } from '@okode/common';
+@NgModule({
+  imports: [
+    OkodeCommonModule
+```
+
+**Usage**
+```typescript
+
+import { ModalWrapperComponent } from '@okode/common';
+
+this.modalCtrl.create(ModalWrapperComponent, { root: 'my-page' }).present();
+// OR with params (optional)
+this.modalCtrl.create(ModalWrapperComponent, { root: 'my-page', params: { foo: 'bar' } }).present();
+```
+>From any point of the new modal `NavController`, we can close the entire modal nav stack returning data (or not) to the point where the modal was created (using `this.navCtrl.parent.getActive().dismiss()`)
+```typescript
+let modal = this.modalCtrl.create(ModalWrapperComponent, { root: 'my-page' });
+modal.present();
+modal.onDismiss(data => {
+  if (data.success == true) {
+    // do something
+  }
+});
+```
+```typescript
+this.navCtrl.parent.getActive().dismiss({ success: true });
+```
