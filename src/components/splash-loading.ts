@@ -13,7 +13,7 @@ import { Platform } from 'ionic-angular';
   `,
   styles:[`
   $splash-loading-background-color: color($colors, primary);
-  $splash-loading-background-image: url('../assets/imgs/login_background.png');
+  $splash-loading-background-image: none;
   ion-content {
     .scroll-content {
       background-color: $splash-loading-background-color;
