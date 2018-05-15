@@ -15,8 +15,8 @@ var SplashLoadingComponent = /** @class */ (function () {
     SplashLoadingComponent.decorators = [
         { type: Component, args: [{
                     selector: 'splash-loading-component',
-                    templateUrl: './splash-loading.html',
-                    styleUrls: ['./splash-loading.scss']
+                    template: "\n  <ion-content padding>\n    <div class=\"loading\">\n      <ion-spinner></ion-spinner><span>Loading...</span>\n    </div>\n  </ion-content>\n  ",
+                    styleUrls: ["splash-loading.scss"]
                 },] },
     ];
     /** @nocollapse */

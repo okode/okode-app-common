@@ -13,6 +13,7 @@
   },
   "include": [
     "src/**/**.ts",
+    "src/**/**.scss",
     "node_modules/cordova-fabric-plugin/typings/*.d.ts"
   ],
   "angularCompilerOptions": {

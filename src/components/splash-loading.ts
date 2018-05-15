@@ -1,11 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Platform } from 'ionic-angular';
 
 @Component({
   selector: 'splash-loading-component',
-  templateUrl: './splash-loading.html',
-  styleUrls: ['./splash-loading.scss']
+  template: `
+  <ion-content padding>
+    <div class="loading">
+      <ion-spinner></ion-spinner><span>Loading...</span>
+    </div>
+  </ion-content>
+  `,
+  styleUrls: [`splash-loading.scss`]
 })
 export class SplashLoadingComponent {
 
