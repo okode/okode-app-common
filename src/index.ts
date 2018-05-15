@@ -4,4 +4,5 @@ export * from './providers/config';
 export * from './providers/crashlytics';
 export * from './providers/http-cache-interceptor';
 export * from './components/modal-wrapper';
+export * from './components/splash-loading';
 export * from './okode-common';
