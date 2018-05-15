@@ -8,15 +8,13 @@ import { MMobile } from './providers/mmobile';
 import { IonicStorageModule } from '@ionic/storage';
 import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
-import { IonicModule } from 'ionic-angular';
 import { ModalWrapperComponent } from './components/modal-wrapper';
-import { SplashLoadingComponent } from './components/splash-loading';
+import { IonicModule } from 'ionic-angular';
 
 @NgModule({
   declarations: [
     // declare all components that your module uses
-    ModalWrapperComponent,
-    SplashLoadingComponent
+    ModalWrapperComponent
   ],
   imports: [
     HttpClientModule,
@@ -25,12 +23,10 @@ import { SplashLoadingComponent } from './components/splash-loading';
   ],
   exports: [
     // export the component(s) that you want others to be able to use
-    ModalWrapperComponent,
-    SplashLoadingComponent
+    ModalWrapperComponent
   ],
   entryComponents: [
-    ModalWrapperComponent,
-    SplashLoadingComponent
+    ModalWrapperComponent
   ]
 })
 export class OkodeCommonModule {
