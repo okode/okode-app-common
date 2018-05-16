@@ -27,7 +27,7 @@ interface QueueResult {
 }
 
 @Injectable()
-export class QueueManagerService {
+export class QueueManager {
 
   static readonly DISPATCHER_METADATA = '_dispatcherMetadata';
 
@@ -291,9 +291,9 @@ export class QueueManagerService {
     let index = this.findQueueItemIndex(queue, item[businessKey]);
     if (index != -1) {
       let queueItem = queue.items[index];
-      queueItem[QueueManagerService.DISPATCHER_METADATA] =
-        queueItem[QueueManagerService.DISPATCHER_METADATA] || {};
-      queueItem[QueueManagerService.DISPATCHER_METADATA].failed = true;
+      queueItem[QueueManager.DISPATCHER_METADATA] =
+        queueItem[QueueManager.DISPATCHER_METADATA] || {};
+      queueItem[QueueManager.DISPATCHER_METADATA].failed = true;
       let handler = queue.queueHandler;
       if (handler && handler.onQueueRequestDispatched) {
         handler.onQueueRequestDispatched(queue, queueItem, false);
@@ -311,7 +311,7 @@ export class QueueManagerService {
    * Filters non failed items so the failed items will not be sent again.
    */
   static filterNonFailed(item: any) {
-    let metatada = item[QueueManagerService.DISPATCHER_METADATA];
+    let metatada = item[QueueManager.DISPATCHER_METADATA];
     return !metatada || !metatada.failed;
   }
 

@@ -16,7 +16,7 @@ export interface Queue {
     isDispatching?: boolean;
     filterOnSend?: (item: any) => boolean;
 }
-export declare class QueueManagerService {
+export declare class QueueManager {
     private log;
     private events;
     static readonly DISPATCHER_METADATA: string;
