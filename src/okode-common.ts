@@ -5,6 +5,7 @@ import { Config } from './providers/config';
 import { CrashlyticsErrorHandler } from './providers/crashlytics';
 import { Log } from './providers/log';
 import { MMobile } from './providers/mmobile';
+import { QueueManager } from './providers/queue-manager';
 import { IonicStorageModule } from '@ionic/storage';
 import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
@@ -38,6 +39,7 @@ export class OkodeCommonModule {
         Config,
         Log,
         MMobile,
+        QueueManager,
         File,
         Device
       ]

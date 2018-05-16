@@ -37,8 +37,8 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { Log } from './log';
 import { Events } from 'ionic-angular';
-var QueueManagerService = /** @class */ (function () {
-    function QueueManagerService(log, events) {
+var QueueManager = /** @class */ (function () {
+    function QueueManager(log, events) {
         this.log = log;
         this.events = events;
         this.maxConcurrency = 0;
@@ -48,14 +48,14 @@ var QueueManagerService = /** @class */ (function () {
      * Returns a queue by name.
      * @param name
      */
-    QueueManagerService.prototype.getQueue = function (name) {
+    QueueManager.prototype.getQueue = function (name) {
         return this.queues[name];
     };
     /**
      * Returns queue items by queue name or null if the queue doesn't exist.
      * @param name
      */
-    QueueManagerService.prototype.getQueueItems = function (name, filter) {
+    QueueManager.prototype.getQueueItems = function (name, filter) {
         var queue = this.getQueue(name);
         var items = queue != null ? (queue.items || []) : null;
         if (items == null)
@@ -68,14 +68,14 @@ var QueueManagerService = /** @class */ (function () {
     /**
      * Returns all queue names.
      */
-    QueueManagerService.prototype.getQueueNames = function () {
+    QueueManager.prototype.getQueueNames = function () {
         return Object.keys(this.queues);
     };
     /**
      * Configures Queues manager in order to know how many request can be dispatched at a time.
      * @param maxConcurrency
      */
-    QueueManagerService.prototype.setMaxConcurrency = function (maxConcurrency) {
+    QueueManager.prototype.setMaxConcurrency = function (maxConcurrency) {
         this.maxConcurrency = maxConcurrency || 0;
     };
     /**
@@ -84,7 +84,7 @@ var QueueManagerService = /** @class */ (function () {
      * @param name
      * @param queue
      */
-    QueueManagerService.prototype.addQueue = function (name, queue) {
+    QueueManager.prototype.addQueue = function (name, queue) {
         if (queue != null) {
             this.queues[name] = queue;
         }
@@ -95,7 +95,7 @@ var QueueManagerService = /** @class */ (function () {
      * @param name
      * @param items
      */
-    QueueManagerService.prototype.updateQueueItems = function (name, items) {
+    QueueManager.prototype.updateQueueItems = function (name, items) {
         if (this.queues[name] != null) {
             this.queues[name].items = items;
         }
@@ -105,7 +105,7 @@ var QueueManagerService = /** @class */ (function () {
      *
      * @param name
      */
-    QueueManagerService.prototype.removeQueue = function (name) {
+    QueueManager.prototype.removeQueue = function (name) {
         delete this.queues[name];
     };
     /**
@@ -114,7 +114,7 @@ var QueueManagerService = /** @class */ (function () {
      * @param name
      * @param businessValue
      */
-    QueueManagerService.prototype.removeQueueItem = function (name, businessValue) {
+    QueueManager.prototype.removeQueueItem = function (name, businessValue) {
         var queue = this.getQueue(name);
         if (!queue || !queue.items)
             return;
@@ -123,11 +123,11 @@ var QueueManagerService = /** @class */ (function () {
             queue.items.splice(index, 1);
         }
     };
-    QueueManagerService.prototype.findQueueItemIndex = function (queue, businessValue) {
+    QueueManager.prototype.findQueueItemIndex = function (queue, businessValue) {
         var businessKey = queue.businessKey;
         return queue.items.findIndex(function (i) { return i[businessKey] == businessValue; });
     };
-    QueueManagerService.prototype.ready = function () {
+    QueueManager.prototype.ready = function () {
         if (this.isDispatching) {
             this.log.i('Queue manager is still processing items');
             return false;
@@ -138,7 +138,7 @@ var QueueManagerService = /** @class */ (function () {
         }
         return true;
     };
-    QueueManagerService.prototype.initDispatch = function () {
+    QueueManager.prototype.initDispatch = function () {
         if (!this.ready()) {
             this.log.i('Queue manager is not ready. Ignoring start');
             return false;
@@ -148,14 +148,14 @@ var QueueManagerService = /** @class */ (function () {
         this.events.publish('queue-manager:started');
         return true;
     };
-    QueueManagerService.prototype.stopDispatch = function () {
+    QueueManager.prototype.stopDispatch = function () {
         this.isDispatching = false;
         this.events.publish('queue-manager:ended');
     };
     /**
      * Dispath all queues one after another if the queue manager is not busy.
      */
-    QueueManagerService.prototype.dispatchQueues = function () {
+    QueueManager.prototype.dispatchQueues = function () {
         return __awaiter(this, void 0, void 0, function () {
             var queueNames, _i, queueNames_1, name_1, err_1;
             return __generator(this, function (_a) {
@@ -199,7 +199,7 @@ var QueueManagerService = /** @class */ (function () {
     /**
      * Dispath a queue by name if the queue manager is not busy.
      */
-    QueueManagerService.prototype.dispatchOneQueue = function (name) {
+    QueueManager.prototype.dispatchOneQueue = function (name) {
         return __awaiter(this, void 0, void 0, function () {
             var queue, err_2;
             return __generator(this, function (_a) {
@@ -233,7 +233,7 @@ var QueueManagerService = /** @class */ (function () {
             });
         });
     };
-    QueueManagerService.prototype.dispatchQueue = function (queue) {
+    QueueManager.prototype.dispatchQueue = function (queue) {
         return __awaiter(this, void 0, void 0, function () {
             var queueHandler;
             return __generator(this, function (_a) {
@@ -257,7 +257,7 @@ var QueueManagerService = /** @class */ (function () {
             });
         });
     };
-    QueueManagerService.prototype.takeMaxItems = function (items, maxConcurrency) {
+    QueueManager.prototype.takeMaxItems = function (items, maxConcurrency) {
         if (items == null)
             return 0;
         if (maxConcurrency == 0)
@@ -270,7 +270,7 @@ var QueueManagerService = /** @class */ (function () {
      *
      * @param queue
      */
-    QueueManagerService.prototype.executeQueueDispatcher = function (queue) {
+    QueueManager.prototype.executeQueueDispatcher = function (queue) {
         var _this = this;
         var items = queue.items.slice();
         if (queue.filterOnSend) {
@@ -294,7 +294,7 @@ var QueueManagerService = /** @class */ (function () {
      * @param queue
      * @param item
      */
-    QueueManagerService.prototype.onItemSuccess = function (queue, item) {
+    QueueManager.prototype.onItemSuccess = function (queue, item) {
         var businessKey = queue.businessKey;
         var index = this.findQueueItemIndex(queue, item[businessKey]);
         if (index != -1) {
@@ -321,14 +321,14 @@ var QueueManagerService = /** @class */ (function () {
      * @param queue
      * @param item
      */
-    QueueManagerService.prototype.onItemFail = function (queue, item) {
+    QueueManager.prototype.onItemFail = function (queue, item) {
         var businessKey = queue.businessKey;
         var index = this.findQueueItemIndex(queue, item[businessKey]);
         if (index != -1) {
             var queueItem = queue.items[index];
-            queueItem[QueueManagerService.DISPATCHER_METADATA] =
-                queueItem[QueueManagerService.DISPATCHER_METADATA] || {};
-            queueItem[QueueManagerService.DISPATCHER_METADATA].failed = true;
+            queueItem[QueueManager.DISPATCHER_METADATA] =
+                queueItem[QueueManager.DISPATCHER_METADATA] || {};
+            queueItem[QueueManager.DISPATCHER_METADATA].failed = true;
             var handler = queue.queueHandler;
             if (handler && handler.onQueueRequestDispatched) {
                 handler.onQueueRequestDispatched(queue, queueItem, false);
@@ -344,22 +344,22 @@ var QueueManagerService = /** @class */ (function () {
     /**
      * Filters non failed items so the failed items will not be sent again.
      */
-    QueueManagerService.filterNonFailed = function (item) {
-        var metatada = item[QueueManagerService.DISPATCHER_METADATA];
+    QueueManager.filterNonFailed = function (item) {
+        var metatada = item[QueueManager.DISPATCHER_METADATA];
         return !metatada || !metatada.failed;
     };
-    QueueManagerService.DISPATCHER_METADATA = '_dispatcherMetadata';
-    QueueManagerService.decorators = [
+    QueueManager.DISPATCHER_METADATA = '_dispatcherMetadata';
+    QueueManager.decorators = [
         { type: Injectable },
     ];
     /** @nocollapse */
-    QueueManagerService.ctorParameters = function () { return [
+    QueueManager.ctorParameters = function () { return [
         { type: Log, },
         { type: Events, },
     ]; };
-    return QueueManagerService;
+    return QueueManager;
 }());
-export { QueueManagerService };
+export { QueueManager };
 var QueueDispatcher = /** @class */ (function () {
     function QueueDispatcher(items, service, log, srcQueue, onItemSuccess, onItemFail) {
         this.items = [];
