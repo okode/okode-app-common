@@ -74,6 +74,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
     this.alertCtrl.create({
       title: 'Error',
       message: isLangES ? CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES : CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN,
+      enableBackdropDismiss: false,
       buttons: [{
         text: isLangES ? 'Aceptar' : 'OK',
         handler: () => {
