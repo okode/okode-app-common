@@ -132,6 +132,7 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         this.alertCtrl.create({
             title: 'Error',
             message: isLangES ? CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES : CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN,
+            enableBackdropDismiss: false,
             buttons: [{
                     text: isLangES ? 'Aceptar' : 'OK',
                     handler: function () {
