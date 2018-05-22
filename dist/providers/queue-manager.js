@@ -86,6 +86,7 @@ var QueueManager = /** @class */ (function () {
      */
     QueueManager.prototype.addQueue = function (name, queue) {
         if (queue != null) {
+            queue.name = name;
             this.queues[name] = queue;
         }
     };
@@ -123,136 +124,86 @@ var QueueManager = /** @class */ (function () {
             queue.items.splice(index, 1);
         }
     };
+    Object.defineProperty(QueueManager.prototype, "isDispatching", {
+        get: function () {
+            var _this = this;
+            var queueNames = this.getQueueNames();
+            var hasQueueDispatching = queueNames.map(function (name) { return _this.queues[name]; }).some(function (q) { return q.isDispatching; });
+            return hasQueueDispatching;
+        },
+        enumerable: true,
+        configurable: true
+    });
     QueueManager.prototype.findQueueItemIndex = function (queue, businessValue) {
         var businessKey = queue.businessKey;
         return queue.items.findIndex(function (i) { return i[businessKey] == businessValue; });
     };
-    QueueManager.prototype.ready = function () {
-        if (this.isDispatching) {
-            this.log.i('Queue manager is still processing items');
+    QueueManager.prototype.initDispatch = function (queue) {
+        if (queue.isDispatching) {
+            this.log.i("Queue " + queue.name + " is being dispatched. Ignoring start");
             return false;
         }
         else if (navigator.onLine == false) {
-            this.log.i('Queue manager has no network connection');
+            this.log.i("There is no network connection. Queue " + queue.name + " will not be dispatched");
             return false;
         }
+        this.log.i("Dispatching queue " + queue.name);
+        queue.isDispatching = true;
         return true;
-    };
-    QueueManager.prototype.initDispatch = function () {
-        if (!this.ready()) {
-            this.log.i('Queue manager is not ready. Ignoring start');
-            return false;
-        }
-        this.log.i('Initializing sync process');
-        this.isDispatching = true;
-        this.events.publish('queue-manager:started');
-        return true;
-    };
-    QueueManager.prototype.stopDispatch = function () {
-        this.isDispatching = false;
-        this.events.publish('queue-manager:ended');
     };
     /**
      * Dispath all queues one after another if the queue manager is not busy.
      */
     QueueManager.prototype.dispatchQueues = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var queueNames, _i, queueNames_1, name_1, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.initDispatch())
-                            return [2 /*return*/];
-                        this.log.i('Dispatching queues');
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        queueNames = this.getQueueNames();
-                        _i = 0, queueNames_1 = queueNames;
-                        _a.label = 2;
-                    case 2:
-                        if (!(_i < queueNames_1.length)) return [3 /*break*/, 5];
-                        name_1 = queueNames_1[_i];
-                        this.log.i("Found queue with name: " + name_1);
-                        return [4 /*yield*/, this.dispatchQueue(this.queues[name_1])];
-                    case 3:
-                        _a.sent();
-                        this.log.i("Queue with name: " + name_1 + " dispatched");
-                        _a.label = 4;
-                    case 4:
-                        _i++;
-                        return [3 /*break*/, 2];
-                    case 5:
-                        this.log.i("All queues were dispatched");
-                        this.stopDispatch();
-                        return [3 /*break*/, 7];
-                    case 6:
-                        err_1 = _a.sent();
-                        this.log.e("Unexpected error dispatching queues. Err: " + JSON.stringify(err_1));
-                        this.stopDispatch();
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
-                }
-            });
-        });
+        this.log.i('Dispatching queues');
+        var queueNames = this.getQueueNames();
+        for (var _i = 0, queueNames_1 = queueNames; _i < queueNames_1.length; _i++) {
+            var name_1 = queueNames_1[_i];
+            this.log.i("Found queue with name: " + name_1);
+            this.dispatchQueue(this.queues[name_1]);
+        }
     };
     /**
      * Dispath a queue by name if the queue manager is not busy.
      */
     QueueManager.prototype.dispatchOneQueue = function (name) {
         return __awaiter(this, void 0, void 0, function () {
-            var queue, err_2;
+            var queue;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.initDispatch())
-                            return [2 /*return*/];
-                        this.log.i("Dispatching one queue with name: " + name);
-                        queue = this.queues[name];
-                        if (queue == null) {
-                            this.log.w("Queue with name " + name + " not found");
-                            this.stopDispatch();
-                            return [2 /*return*/];
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, this.dispatchQueue(queue)];
-                    case 2:
-                        _a.sent();
-                        this.log.i("One queue was dispatched: " + name);
-                        this.stopDispatch();
-                        return [3 /*break*/, 4];
-                    case 3:
-                        err_2 = _a.sent();
-                        this.log.e("Unexpected error dispatching one queue. Err: " + JSON.stringify(err_2));
-                        this.stopDispatch();
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
-                }
+                this.log.i("Dispatching one queue with name: " + name);
+                queue = this.queues[name];
+                this.dispatchQueue(queue);
+                return [2 /*return*/];
             });
         });
     };
     QueueManager.prototype.dispatchQueue = function (queue) {
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
             var queueHandler;
             return __generator(this, function (_a) {
                 if (queue == null) {
-                    this.log.w('Queue not found or no items');
+                    this.log.w("Queue " + queue.name + " not found");
                     return [2 /*return*/];
                 }
                 if (queue.items == null || queue.items.length == 0) {
-                    this.log.i('Queue has no items');
+                    this.log.i("Queue " + queue.name + " has no items");
                     return [2 /*return*/];
                 }
-                queue.isDispatching = true;
+                if (!this.initDispatch(queue))
+                    return [2 /*return*/];
                 queueHandler = queue.queueHandler;
-                return [2 /*return*/, this.executeQueueDispatcher(queue).then(function (res) {
-                        queue.isDispatching = true;
+                return [2 /*return*/, this.executeQueueDispatcher(queue)
+                        .then(function (res) {
+                        queue.isDispatching = false;
                         if (queueHandler.onQueueCompleted) {
                             queueHandler.onQueueCompleted(queue, res.successItems, res.failedItems);
                         }
+                        _this.log.i("Queue was dispatched: " + name);
                         return res;
+                    })
+                        .catch(function (err) {
+                        _this.log.e("Unexpected error dispatching queue " + queue.name + ". Err: " + JSON.stringify(err));
                     })];
             });
         });

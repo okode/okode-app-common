@@ -13,6 +13,7 @@ export interface IQueueHandler {
  * Business key must be an unique identifier for the object so the queue works properly.
  */
 export interface Queue {
+  name?: string;
   // It's the property name that identifies the queue's object (e.g: 'id').
   businessKey: string;
   items: any[];
@@ -31,7 +32,6 @@ export class QueueManager {
 
   static readonly DISPATCHER_METADATA = '_dispatcherMetadata';
 
-  private isDispatching: boolean;
   private maxConcurrency = 0;
   private queues: {
     [name: string]: Queue;
@@ -87,6 +87,7 @@ export class QueueManager {
    */
   addQueue(name: string, queue: Queue) {
     if (queue != null) {
+      queue.name = name;
       this.queues[name] = queue;
     }
   }
@@ -127,56 +128,39 @@ export class QueueManager {
     }
   }
 
+  get isDispatching() {
+    let queueNames = this.getQueueNames();
+    let hasQueueDispatching = queueNames.map(name => this.queues[name]).some(q => q.isDispatching);
+    return hasQueueDispatching;
+  }
+
   private findQueueItemIndex(queue: Queue, businessValue: string) {
     let businessKey = queue.businessKey;
     return queue.items.findIndex(i => i[businessKey] == businessValue);
   }
 
-  private ready() {
-    if (this.isDispatching) {
-      this.log.i('Queue manager is still processing items');
+  private initDispatch(queue: Queue) {
+    if (queue.isDispatching) {
+      this.log.i(`Queue ${queue.name} is being dispatched. Ignoring start`);
       return false;
     } else if (navigator.onLine == false) {
-      this.log.i('Queue manager has no network connection');
+      this.log.i(`There is no network connection. Queue ${queue.name} will not be dispatched`);
       return false;
     }
+    this.log.i(`Dispatching queue ${queue.name}`);
+    queue.isDispatching = true;
     return true;
-  }
-
-  private initDispatch() {
-    if (!this.ready()) {
-      this.log.i('Queue manager is not ready. Ignoring start');
-      return false;
-    }
-    this.log.i('Initializing sync process');
-    this.isDispatching = true;
-    this.events.publish('queue-manager:started');
-    return true;
-  }
-
-  private stopDispatch() {
-    this.isDispatching = false;
-    this.events.publish('queue-manager:ended');
   }
 
   /**
    * Dispath all queues one after another if the queue manager is not busy.
    */
-  async dispatchQueues() {
-    if (!this.initDispatch()) return;
+  dispatchQueues() {
     this.log.i('Dispatching queues');
-    try {
-      let queueNames = this.getQueueNames();
-      for (let name of queueNames) {
-        this.log.i(`Found queue with name: ${name}`);
-        await this.dispatchQueue(this.queues[name]);
-        this.log.i(`Queue with name: ${name} dispatched`);
-      }
-      this.log.i(`All queues were dispatched`);
-      this.stopDispatch();
-    } catch (err) {
-      this.log.e(`Unexpected error dispatching queues. Err: ${JSON.stringify(err)}`);
-      this.stopDispatch();
+    let queueNames = this.getQueueNames();
+    for (let name of queueNames) {
+      this.log.i(`Found queue with name: ${name}`);
+      this.dispatchQueue(this.queues[name]);
     }
   }
 
@@ -184,42 +168,34 @@ export class QueueManager {
    * Dispath a queue by name if the queue manager is not busy.
    */
   async dispatchOneQueue(name: string) {
-    if (!this.initDispatch()) return;
     this.log.i(`Dispatching one queue with name: ${name}`);
     let queue = this.queues[name];
-    if (queue == null) {
-      this.log.w(`Queue with name ${name} not found`);
-      this.stopDispatch();
-      return;
-    }
-    try {
-      await this.dispatchQueue(queue);
-      this.log.i(`One queue was dispatched: ${name}`);
-      this.stopDispatch();
-    } catch (err) {
-      this.log.e(`Unexpected error dispatching one queue. Err: ${JSON.stringify(err)}`);
-      this.stopDispatch();
-    }
+    this.dispatchQueue(queue);
   }
 
   private async dispatchQueue(queue: Queue) {
     if (queue == null) {
-      this.log.w('Queue not found or no items');
+      this.log.w(`Queue ${queue.name} not found`);
       return;
     }
     if (queue.items == null || queue.items.length == 0) {
-      this.log.i('Queue has no items');
+      this.log.i(`Queue ${queue.name} has no items`);
       return;
     }
-    queue.isDispatching = true;
+    if (!this.initDispatch(queue)) return;
     let queueHandler = queue.queueHandler;
-    return this.executeQueueDispatcher(queue).then(res => {
-      queue.isDispatching = true;
-      if (queueHandler.onQueueCompleted) {
-        queueHandler.onQueueCompleted(queue, res.successItems, res.failedItems);
-      }
-      return res;
-    });
+    return this.executeQueueDispatcher(queue)
+      .then(res => {
+        queue.isDispatching = false;
+        if (queueHandler.onQueueCompleted) {
+          queueHandler.onQueueCompleted(queue, res.successItems, res.failedItems);
+        }
+        this.log.i(`Queue was dispatched: ${name}`);
+        return res;
+      })
+      .catch(err => {
+        this.log.e(`Unexpected error dispatching queue ${queue.name}. Err: ${JSON.stringify(err)}`);
+      });
   }
 
   private takeMaxItems(items: any[], maxConcurrency: number) {
@@ -372,4 +348,3 @@ class QueueDispatcher {
   }
 
 }
-

@@ -10,6 +10,7 @@ export interface IQueueHandler {
  * Business key must be an unique identifier for the object so the queue works properly.
  */
 export interface Queue {
+    name?: string;
     businessKey: string;
     items: any[];
     queueHandler: IQueueHandler;
@@ -20,7 +21,6 @@ export declare class QueueManager {
     private log;
     private events;
     static readonly DISPATCHER_METADATA: string;
-    private isDispatching;
     private maxConcurrency;
     private queues;
     constructor(log: Log, events: Events);
@@ -70,14 +70,13 @@ export declare class QueueManager {
      * @param businessValue
      */
     removeQueueItem(name: string, businessValue: string): void;
+    readonly isDispatching: boolean;
     private findQueueItemIndex(queue, businessValue);
-    private ready();
-    private initDispatch();
-    private stopDispatch();
+    private initDispatch(queue);
     /**
      * Dispath all queues one after another if the queue manager is not busy.
      */
-    dispatchQueues(): Promise<void>;
+    dispatchQueues(): void;
     /**
      * Dispath a queue by name if the queue manager is not busy.
      */
