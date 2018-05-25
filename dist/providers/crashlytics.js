@@ -43,7 +43,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Platform, IonicErrorHandler, AlertController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
@@ -64,13 +64,13 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         if (this.isIgnorableNavError(error)) {
             return;
         }
-        if (isDevMode() && error.rejection && error.rejection.needsRestartApp == true) {
+        if (!this.platform.is('cordova') && error.rejection && error.rejection.needsRestartApp == true) {
             this.restartApp();
         }
         else {
             _super.prototype.handleError.call(this, error);
         }
-        if (!isDevMode() && !this.isIgnorableError(error)) {
+        if (this.platform.is('cordova') && !this.isIgnorableError(error)) {
             this.sendError(error);
         }
     };
