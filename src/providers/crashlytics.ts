@@ -1,4 +1,4 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Platform, IonicErrorHandler, AlertController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as StackTrace from 'stacktrace-js';
@@ -24,12 +24,12 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
 
   handleError(error: any) {
     if (this.isIgnorableNavError(error)) { return; }
-    if (isDevMode() && error.rejection && error.rejection.needsRestartApp == true) {
+    if (!this.platform.is('cordova') && error.rejection && error.rejection.needsRestartApp == true) {
       this.restartApp();
     } else {
       super.handleError(error);
     }
-    if (!isDevMode() && !this.isIgnorableError(error)) {
+    if (this.platform.is('cordova') && !this.isIgnorableError(error)) {
       this.sendError(error);
     }
   }
