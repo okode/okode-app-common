@@ -45,6 +45,8 @@ var MMobile = /** @class */ (function () {
         this.file = file;
         this.device = device;
         this.storage = storage;
+        this.logsQueue = [];
+        this.isProcessingLogs = false;
     }
     MMobile.prototype.init = function (baseUrl, appName, version, jwtConfigName, timeout) {
         var _this = this;
@@ -196,21 +198,30 @@ var MMobile = /** @class */ (function () {
     };
     MMobile.prototype.writeLog = function (log) {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
             var message;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        message = ">>>>>>> " + this.getFormattedDateWithHour() + ": " + log + '\n';
-                        return [4 /*yield*/, this.file.writeFile("" + this.file.dataDirectory + MMobile.LOGS_DIR + "/", this.getLogsFileName(), message, { append: true })
-                                .catch(function (err) {
-                                _this.printLog("Error writing log to file. Discarding it. Reason: " + JSON.stringify(err));
-                            })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
+                message = ">>>>>>> " + this.getFormattedDateWithHour() + ": " + log + '\n';
+                this.logsQueue.push(message);
+                if (!this.isProcessingLogs) {
+                    this.processLogs();
                 }
+                return [2 /*return*/];
             });
+        });
+    };
+    MMobile.prototype.processLogs = function () {
+        var _this = this;
+        if (!this.logsQueue.length) {
+            this.isProcessingLogs = false;
+            return;
+        }
+        this.isProcessingLogs = true;
+        var m = this.logsQueue.shift();
+        this.file.writeFile("" + this.file.dataDirectory + MMobile.LOGS_DIR + "/", this.getLogsFileName(), m, { append: true })
+            .then(function () { return _this.processLogs(); })
+            .catch(function (err) {
+            _this.printLog("Error writing log to file. Discarding it. Reason: " + JSON.stringify(err));
+            _this.processLogs();
         });
     };
     MMobile.prototype.sendLogs = function (deviceName) {

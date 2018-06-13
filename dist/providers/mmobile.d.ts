@@ -14,6 +14,8 @@ export declare class MMobile {
     private version;
     private jwtConfigName;
     private config;
+    private logsQueue;
+    private isProcessingLogs;
     private logger;
     private static readonly INITIAL_CONFIG_PATH;
     private static readonly LOGS_DIR;
@@ -31,6 +33,7 @@ export declare class MMobile {
     isDeviceLocked(): boolean;
     getLastUpdatedDate(): Promise<Date>;
     writeLog(log: string): Promise<void>;
+    private processLogs();
     sendLogs(deviceName: string): Promise<boolean>;
     isLogsEnabled(): boolean;
     getServiceUrl(key: string): any;

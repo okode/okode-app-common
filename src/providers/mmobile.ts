@@ -16,6 +16,8 @@ export class MMobile {
 
   private config: any;
 
+  private logsQueue: string[] = [];
+  private isProcessingLogs = false;
   private logger: Logger;
 
   private static readonly INITIAL_CONFIG_PATH = 'assets/config/mmobileInitialConfig.json';
@@ -196,9 +198,27 @@ export class MMobile {
 
   async writeLog(log: string) {
     let message = `>>>>>>> ${this.getFormattedDateWithHour()}: ${log}` + '\n';
-    await this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), message, {append: true})
+    this.logsQueue.push(message);
+    
+    if (!this.isProcessingLogs) {
+      this.processLogs();
+    }
+  }
+
+  private processLogs() {
+    if (!this.logsQueue.length) {
+      this.isProcessingLogs = false;
+      return;
+    }
+
+    this.isProcessingLogs = true;
+    let m = this.logsQueue.shift();
+
+    this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), m, {append: true})
+      .then(() => this.processLogs())
       .catch(err => {
         this.printLog(`Error writing log to file. Discarding it. Reason: ${JSON.stringify(err)}`);
+        this.processLogs();
       });
   }
 
