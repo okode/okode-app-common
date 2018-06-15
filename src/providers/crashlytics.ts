@@ -12,6 +12,9 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   private static APP_CRASH_MESSAGE_ES = 'La App ha detectado un error y se reiniciará.';
   private static APP_CRASH_MESSAGE_EN = 'An error was detected, the App will restart.';
 
+  private static APP_CRASH_QUOTA_EXCEEDED_ES = 'Optimiza el espacio disponible para poder acceder a la app';
+  private static APP_CRASH_QUOTA_EXCEEDED_EN = 'Please optimize the available storage space in order to be able to use the app';
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -23,6 +26,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   handleError(error: any) {
+    if (this.isQuotaExceededError(error)) return this.handleQuotaExceededError();
     if (this.isIgnorableNavError(error)) { return; }
     if (!this.platform.is('cordova') && error.rejection && error.rejection.needsRestartApp == true) {
       this.restartApp();
@@ -41,7 +45,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
       if (keys.indexOf(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY) != -1) appWasCrashed = true;
       await this.storage.remove(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY);
       return appWasCrashed;
-    } catch (err) {}
+    } catch (err) { }
     return false;
   }
 
@@ -108,7 +112,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
   }
 
   private isIgnorableNavError(error: any) {
-    if (!error || !error.message) { return false; }
+    if (!error || !error.message) { return false; }
     let message = error.message;
     /**
      * Messages got from:
@@ -124,6 +128,39 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
       return true;
     }
     return false;
+  }
+
+  isQuotaExceededError(error: any) {
+    if (error) {
+      if (error.rejection && error.rejection.QUOTA_EXCEEDED_ERR == DOMException.QUOTA_EXCEEDED_ERR) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  handleQuotaExceededError() {
+    this.splashScreen.hide();
+    let isLangES = navigator.language.startsWith('es');
+    this.alertCtrl.create({
+      title: 'Error',
+      message: isLangES ? CrashlyticsErrorHandler.APP_CRASH_QUOTA_EXCEEDED_ES : CrashlyticsErrorHandler.APP_CRASH_QUOTA_EXCEEDED_EN,
+      enableBackdropDismiss: false,
+      buttons: [{
+        text: isLangES ? 'Aceptar' : 'OK',
+        handler: () => {
+          this.log.e(CrashlyticsErrorHandler.APP_CRASH_QUOTA_EXCEEDED_EN);
+          this.log.e(`Creating entry in local storage for ${CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY} = true`);
+          this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(() => {
+            this.splashScreen.show();
+            this.restartApp();
+          }).catch(() => {
+            this.splashScreen.show();
+            this.restartApp();
+          });
+        }
+      }]
+    }).present();
   }
 
 }
