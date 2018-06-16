@@ -33,17 +33,17 @@ export declare class MMobile {
     isDeviceLocked(): boolean;
     getLastUpdatedDate(): Promise<Date>;
     writeLog(log: string): Promise<void>;
-    private processLogs();
+    private processLogs;
     sendLogs(deviceName: string): Promise<boolean>;
     isLogsEnabled(): boolean;
     getServiceUrl(key: string): any;
     getJwtLoginUrl(): string;
     isInitialized(): boolean;
     setLogger(logger: Logger): void;
-    private prepareLogs();
-    private getFormattedDateWithHour();
-    private getLogsFileName();
-    private jsonToURLEncoded(jsonString);
-    private checkIfIsInitialized();
-    private printLog(message?, ...optionalParams);
+    private prepareLogs;
+    private getFormattedDateWithHour;
+    private getLogsFileName;
+    private jsonToURLEncoded;
+    private checkIfIsInitialized;
+    private printLog;
 }

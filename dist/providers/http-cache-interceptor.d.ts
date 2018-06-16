@@ -10,5 +10,5 @@ export declare class HttpCacheInterceptor implements HttpInterceptor {
     private static readonly HEADER_VALUE_CACHE_CLEAR;
     constructor(duration: number);
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
-    private isReponseExpired(cachedResponse);
+    private isReponseExpired;
 }

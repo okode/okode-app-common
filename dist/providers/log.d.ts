@@ -21,6 +21,6 @@ export declare class Log implements Logger {
     d(message?: any, ...optionalParams: any[]): void;
     w(message?: any, ...optionalParams: any[]): void;
     e(message?: any, ...optionalParams: any[]): void;
-    private print(tag, message?, ...optionalParams);
-    private getUser();
+    private print;
+    private getUser;
 }
