@@ -11,12 +11,16 @@ export declare class CrashlyticsErrorHandler extends IonicErrorHandler {
     private static APP_CRASH_DETECTED_KEY;
     private static APP_CRASH_MESSAGE_ES;
     private static APP_CRASH_MESSAGE_EN;
+    private static APP_CRASH_QUOTA_EXCEEDED_ES;
+    private static APP_CRASH_QUOTA_EXCEEDED_EN;
     constructor(platform: Platform, splashScreen: SplashScreen, log: Log, storage: Storage, alertCtrl: AlertController);
     handleError(error: any): void;
     getAndClearCrashDetected(): Promise<boolean>;
-    private sendError(error);
-    private displayErrorMsgAndReload();
-    private restartApp();
-    private isIgnorableError(error);
-    private isIgnorableNavError(error);
+    private sendError;
+    private displayErrorMsgAndReload;
+    private restartApp;
+    private isIgnorableError;
+    private isIgnorableNavError;
+    isQuotaExceededError(error: any): boolean;
+    handleQuotaExceededError(): void;
 }

@@ -23,9 +23,9 @@ export declare class Config {
     private readyPromiseReject;
     constructor(platform: Platform, storage: Storage, appVersion: AppVersion, http: HttpClient, actionSheetCtrl: ActionSheetController, toastCtrl: ToastController, log: Log);
     ready(): Promise<void>;
-    private initConfigs();
-    private showEnvironmentActionSheet(environments, configs);
-    private setConfig(save, environment, configBase, configEnvironment?);
+    private initConfigs;
+    private showEnvironmentActionSheet;
+    private setConfig;
     getConfig(): any;
     getEnvironment(): string;
     getUpdateToVersion(): number;

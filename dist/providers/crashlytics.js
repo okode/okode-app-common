@@ -23,8 +23,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -61,6 +61,8 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         return _this;
     }
     CrashlyticsErrorHandler.prototype.handleError = function (error) {
+        if (this.isQuotaExceededError(error))
+            return this.handleQuotaExceededError();
         if (this.isIgnorableNavError(error)) {
             return;
         }
@@ -182,9 +184,43 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         }
         return false;
     };
+    CrashlyticsErrorHandler.prototype.isQuotaExceededError = function (error) {
+        if (error) {
+            if (error.rejection && error.rejection.QUOTA_EXCEEDED_ERR == DOMException.QUOTA_EXCEEDED_ERR) {
+                return true;
+            }
+        }
+        return false;
+    };
+    CrashlyticsErrorHandler.prototype.handleQuotaExceededError = function () {
+        var _this = this;
+        this.splashScreen.hide();
+        var isLangES = navigator.language.startsWith('es');
+        this.alertCtrl.create({
+            title: 'Error',
+            message: isLangES ? CrashlyticsErrorHandler.APP_CRASH_QUOTA_EXCEEDED_ES : CrashlyticsErrorHandler.APP_CRASH_QUOTA_EXCEEDED_EN,
+            enableBackdropDismiss: false,
+            buttons: [{
+                    text: isLangES ? 'Aceptar' : 'OK',
+                    handler: function () {
+                        _this.log.e(CrashlyticsErrorHandler.APP_CRASH_QUOTA_EXCEEDED_EN);
+                        _this.log.e("Creating entry in local storage for " + CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY + " = true");
+                        _this.storage.set(CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY, true).then(function () {
+                            _this.splashScreen.show();
+                            _this.restartApp();
+                        }).catch(function () {
+                            _this.splashScreen.show();
+                            _this.restartApp();
+                        });
+                    }
+                }]
+        }).present();
+    };
     CrashlyticsErrorHandler.APP_CRASH_DETECTED_KEY = 'OKODE_APP_CRASH_DETECTED';
     CrashlyticsErrorHandler.APP_CRASH_MESSAGE_ES = 'La App ha detectado un error y se reiniciará.';
     CrashlyticsErrorHandler.APP_CRASH_MESSAGE_EN = 'An error was detected, the App will restart.';
+    CrashlyticsErrorHandler.APP_CRASH_QUOTA_EXCEEDED_ES = 'Optimiza el espacio disponible para poder acceder a la app';
+    CrashlyticsErrorHandler.APP_CRASH_QUOTA_EXCEEDED_EN = 'Please optimize the available storage space in order to be able to use the app';
     CrashlyticsErrorHandler.decorators = [
         { type: Injectable },
     ];

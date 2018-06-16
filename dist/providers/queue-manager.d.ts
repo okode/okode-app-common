@@ -71,8 +71,8 @@ export declare class QueueManager {
      */
     removeQueueItem(name: string, businessValue: string): void;
     readonly isDispatching: boolean;
-    private findQueueItemIndex(queue, businessValue);
-    private initDispatch(queue);
+    private findQueueItemIndex;
+    private initDispatch;
     /**
      * Dispath all queues one after another if the queue manager is not busy.
      */
@@ -81,22 +81,22 @@ export declare class QueueManager {
      * Dispath a queue by name if the queue manager is not busy.
      */
     dispatchOneQueue(name: string): Promise<void>;
-    private dispatchQueue(queue);
-    private takeMaxItems(items, maxConcurrency);
+    private dispatchQueue;
+    private takeMaxItems;
     /**
      * Builds a queue items processor and execute it n times dependending on max concurrency.
      * When the processor ends, the promise will be resolved.
      *
      * @param queue
      */
-    private executeQueueDispatcher(queue);
+    private executeQueueDispatcher;
     /**
      * Removes an item sent successfully from its queue by businessKey.
      *
      * @param queue
      * @param item
      */
-    private onItemSuccess(queue, item);
+    private onItemSuccess;
     /**
      * Adds metadata on a item which couldn't have been sent successfully by businessKey.
      * {
@@ -110,7 +110,7 @@ export declare class QueueManager {
      * @param queue
      * @param item
      */
-    private onItemFail(queue, item);
+    private onItemFail;
     /**
      * QUEUE DEFAULT FILTERS
      */

@@ -13,8 +13,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -179,8 +179,8 @@ var QueueManager = /** @class */ (function () {
     };
     QueueManager.prototype.dispatchQueue = function (queue) {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
             var queueHandler;
+            var _this = this;
             return __generator(this, function (_a) {
                 if (queue == null) {
                     this.log.w("Queue " + queue.name + " not found");
