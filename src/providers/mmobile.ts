@@ -13,6 +13,7 @@ export class MMobile {
   private appName: string;
   private version: string;
   private jwtConfigName: string;
+  private timeout: number;
 
   private config: any;
 
@@ -39,6 +40,7 @@ export class MMobile {
       this.appName = appName;
       this.version = version;
       this.jwtConfigName = jwtConfigName;
+      this.timeout = timeout;
 
       this.prepareLogs();
 
@@ -102,7 +104,7 @@ export class MMobile {
 
   reloadConfig() {
     this.checkIfIsInitialized();
-    return this.init(this.baseUrl, this.appName, this.version);
+    return this.init(this.baseUrl, this.appName, this.version, this.jwtConfigName, this.timeout);
   }
 
   getCustomConfig() {
