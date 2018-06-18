@@ -55,6 +55,7 @@ var MMobile = /** @class */ (function () {
             _this.appName = appName;
             _this.version = version;
             _this.jwtConfigName = jwtConfigName;
+            _this.timeout = timeout;
             _this.prepareLogs();
             var url = baseUrl + "/config/" + appName + "/" + version;
             var observable = _this.http.get(url);
@@ -117,7 +118,7 @@ var MMobile = /** @class */ (function () {
     };
     MMobile.prototype.reloadConfig = function () {
         this.checkIfIsInitialized();
-        return this.init(this.baseUrl, this.appName, this.version);
+        return this.init(this.baseUrl, this.appName, this.version, this.jwtConfigName, this.timeout);
     };
     MMobile.prototype.getCustomConfig = function () {
         this.checkIfIsInitialized();

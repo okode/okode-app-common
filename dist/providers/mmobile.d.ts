@@ -13,6 +13,7 @@ export declare class MMobile {
     private appName;
     private version;
     private jwtConfigName;
+    private timeout;
     private config;
     private logsQueue;
     private isProcessingLogs;
