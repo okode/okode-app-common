@@ -185,9 +185,19 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
         return false;
     };
     CrashlyticsErrorHandler.prototype.isQuotaExceededError = function (error) {
+        this.log.e({ error: error });
         if (error) {
-            if (error.rejection && error.rejection.QUOTA_EXCEEDED_ERR == DOMException.QUOTA_EXCEEDED_ERR) {
-                return true;
+            if (error.rejection) {
+                if (error.rejection instanceof DOMException) {
+                    if (error.rejection.code == DOMException.QUOTA_EXCEEDED_ERR) {
+                        return true;
+                    }
+                }
+                else {
+                    if (error.rejection.code == 4 && error.rejection.message == 'sqlite3_step failure: database or disk is full') { // https://github.com/litehelpers/Cordova-sqlite-storage/blob/87a06a0705576c772a6b2e95f07ca659eca8744c/src/android/io/sqlc/SQLiteConnectorDatabase.java#L136
+                        return true;
+                    }
+                }
             }
         }
         return false;
