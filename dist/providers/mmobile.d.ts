@@ -39,6 +39,7 @@ export declare class MMobile {
     isLogsEnabled(): boolean;
     getServiceUrl(key: string): any;
     getJwtLoginUrl(): string;
+    getJwtRefreshUrl(): string;
     isInitialized(): boolean;
     setLogger(logger: Logger): void;
     private prepareLogs;
