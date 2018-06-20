@@ -286,6 +286,16 @@ var MMobile = /** @class */ (function () {
             return null;
         }
     };
+    MMobile.prototype.getJwtRefreshUrl = function () {
+        this.checkIfIsInitialized();
+        if (this.jwtConfigName) {
+            return this.baseUrl + "/jwt/refresh/" + this.appName + "/" + this.version + "/" + this.jwtConfigName;
+        }
+        else {
+            this.printLog("jwtConfigName service is not enabled");
+            return null;
+        }
+    };
     MMobile.prototype.isInitialized = function () {
         return this.config != null;
     };
