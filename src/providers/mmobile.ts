@@ -232,7 +232,7 @@ export class MMobile {
         .then(log => {
           let logsUrl = `${this.baseUrl}/services/public/${this.appName}/${this.version}/${MMobile.LOGS_SERVICE_KEY}`;
           let body = {
-            'rawlog': btoa(log),
+            'rawlog': btoa(unescape(encodeURIComponent(log))),
             'deviceId': deviceName
           };
           let headers = new HttpHeaders({
