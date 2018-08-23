@@ -234,7 +234,7 @@ var MMobile = /** @class */ (function () {
                     .then(function (log) {
                     var logsUrl = _this.baseUrl + "/services/public/" + _this.appName + "/" + _this.version + "/" + MMobile.LOGS_SERVICE_KEY;
                     var body = {
-                        'rawlog': btoa(log),
+                        'rawlog': btoa(unescape(encodeURIComponent(log))),
                         'deviceId': deviceName
                     };
                     var headers = new HttpHeaders({
