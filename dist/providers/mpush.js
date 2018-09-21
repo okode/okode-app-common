@@ -11,43 +11,43 @@ export var UserIdType;
     UserIdType[UserIdType["USUARIOAMA"] = 3] = "USUARIOAMA";
     UserIdType[UserIdType["USUARIOCIS"] = 4] = "USUARIOCIS";
 })(UserIdType || (UserIdType = {}));
-var MPushService = /** @class */ (function () {
-    function MPushService(http, device, storage, log) {
+var MPush = /** @class */ (function () {
+    function MPush(http, device, storage, log) {
         this.http = http;
         this.device = device;
         this.storage = storage;
         this.log = log;
     }
-    MPushService.prototype.init = function (baseUrl, mpushClientApp, userIdType) {
+    MPush.prototype.init = function (baseUrl, mpushClientApp, userIdType) {
         this.baseUrl = baseUrl + "/" + mpushClientApp;
         this.userIdType = userIdType;
     };
-    MPushService.prototype.setCredentials = function (user, password) {
+    MPush.prototype.setCredentials = function (user, password) {
         this.user = user;
         this.password = password;
     };
-    MPushService.prototype.register = function (user) {
+    MPush.prototype.register = function (user) {
         var _this = this;
         this.checkIfIsInitialized();
         return this.storage.ready()
             .then(function () {
-            return _this.storage.get(MPushService.USUNM);
+            return _this.storage.get(MPush.USUNM);
         })
             .then(function (usunm) {
             return _this.doRegister(user, usunm);
         });
     };
-    MPushService.prototype.forceNewRegister = function (user) {
+    MPush.prototype.forceNewRegister = function (user) {
         this.checkIfIsInitialized();
         return this.doRegister(user, null);
     };
-    MPushService.prototype.unregister = function (userValue) {
+    MPush.prototype.unregister = function (userValue) {
         var _this = this;
         this.checkIfIsInitialized();
         return new Promise(function (resolve, reject) {
             var currentUsunm = null;
             _this.storage.ready()
-                .then(function () { return _this.storage.get(MPushService.USUNM); })
+                .then(function () { return _this.storage.get(MPush.USUNM); })
                 .then(function (usunm) {
                 currentUsunm = usunm;
                 return _this.getChannelId();
@@ -82,10 +82,10 @@ var MPushService = /** @class */ (function () {
             });
         });
     };
-    MPushService.prototype.getUsunm = function () {
-        return this.storage.get(MPushService.USUNM);
+    MPush.prototype.getUsunm = function () {
+        return this.storage.get(MPush.USUNM);
     };
-    MPushService.prototype.doRegister = function (userValue, usunm) {
+    MPush.prototype.doRegister = function (userValue, usunm) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.getChannelId()
@@ -113,7 +113,7 @@ var MPushService = /** @class */ (function () {
                     if (currentUsunm) {
                         UAirship.setAlias(currentUsunm, function () {
                             _this.log.i("[MPUSH] Device usunm " + currentUsunm);
-                            _this.storage.ready().then(function () { return _this.storage.set(MPushService.USUNM, currentUsunm); });
+                            _this.storage.ready().then(function () { return _this.storage.set(MPush.USUNM, currentUsunm); });
                         });
                     }
                     else {
@@ -128,7 +128,7 @@ var MPushService = /** @class */ (function () {
                     if (response.code && response.code == unknownUsunm) {
                         _this.log.w('[MPUSH] Usunm not registered in mpush and trying to obtain new one');
                         _this.storage.ready()
-                            .then(function () { return _this.storage.remove(MPushService.USUNM); })
+                            .then(function () { return _this.storage.remove(MPush.USUNM); })
                             .then(function () { return _this.doRegister(userValue, null); })
                             .then(function () { return resolve(); })
                             .catch(function (err) { return reject(err); });
@@ -140,19 +140,19 @@ var MPushService = /** @class */ (function () {
                 .catch(function (err) { return reject(err); });
         });
     };
-    MPushService.prototype.getChannelId = function () {
+    MPush.prototype.getChannelId = function () {
         var maxTimeout = 10000;
         var promise = new Promise(function (resolve, reject) {
             UAirship.getChannelID((function (channelId) { return resolve(channelId); }));
         });
         return this.promiseTimeout(maxTimeout, promise);
     };
-    MPushService.prototype.checkIfIsInitialized = function () {
+    MPush.prototype.checkIfIsInitialized = function () {
         if (this.baseUrl == null) {
             throw ('MPush is not initialized');
         }
     };
-    MPushService.prototype.promiseTimeout = function (milis, promise) {
+    MPush.prototype.promiseTimeout = function (milis, promise) {
         // Create a promise that rejects in <ms> milliseconds
         var timeout = new Promise(function (resolve, reject) {
             var id = setTimeout(function () {
@@ -163,7 +163,7 @@ var MPushService = /** @class */ (function () {
         // Returns a race between our timeout and the passed in promise
         return Promise.race([promise, timeout]);
     };
-    MPushService.prototype.safeStringify = function (e) {
+    MPush.prototype.safeStringify = function (e) {
         try {
             return JSON.stringify(e);
         }
@@ -171,18 +171,18 @@ var MPushService = /** @class */ (function () {
             return 'Error on parse json error';
         }
     };
-    MPushService.USUNM = 'usunm';
-    MPushService.decorators = [
+    MPush.USUNM = 'usunm';
+    MPush.decorators = [
         { type: Injectable },
     ];
     /** @nocollapse */
-    MPushService.ctorParameters = function () { return [
+    MPush.ctorParameters = function () { return [
         { type: HttpClient, },
         { type: Device, },
         { type: Storage, },
         { type: Log, },
     ]; };
-    return MPushService;
+    return MPush;
 }());
-export { MPushService };
+export { MPush };
 //# sourceMappingURL=mpush.js.map

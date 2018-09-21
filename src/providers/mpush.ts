@@ -13,7 +13,7 @@ export enum UserIdType {
 }
 
 @Injectable()
-export class MPushService {
+export class MPush {
 
   private baseUrl: string;
   private userIdType: UserIdType;
@@ -44,7 +44,7 @@ export class MPushService {
     this.checkIfIsInitialized();
     return this.storage.ready()
       .then(() => {
-        return this.storage.get(MPushService.USUNM);
+        return this.storage.get(MPush.USUNM);
       })
       .then(usunm => {
         return this.doRegister(user, usunm);
@@ -61,7 +61,7 @@ export class MPushService {
     return new Promise<void>((resolve, reject) => {
       let currentUsunm: string = null;
       this.storage.ready()
-        .then(() => this.storage.get(MPushService.USUNM))
+        .then(() => this.storage.get(MPush.USUNM))
         .then(usunm => {
           currentUsunm = usunm;
           return this.getChannelId();
@@ -96,7 +96,7 @@ export class MPushService {
   }
 
   getUsunm() {
-    return this.storage.get(MPushService.USUNM);
+    return this.storage.get(MPush.USUNM);
   }
 
   private doRegister(userValue: string, usunm: string) {
@@ -125,7 +125,7 @@ export class MPushService {
               if (currentUsunm) {
                 UAirship.setAlias(currentUsunm, () => {
                   this.log.i(`[MPUSH] Device usunm ${currentUsunm}`);
-                  this.storage.ready().then(() => this.storage.set(MPushService.USUNM, currentUsunm));
+                  this.storage.ready().then(() => this.storage.set(MPush.USUNM, currentUsunm));
                 });
               } else {
                 this.log.e('[MPUSH] Error getting usunm.');
@@ -139,7 +139,7 @@ export class MPushService {
               if (response.code && response.code == unknownUsunm) {
                 this.log.w('[MPUSH] Usunm not registered in mpush and trying to obtain new one');
                 this.storage.ready()
-                  .then(() => this.storage.remove(MPushService.USUNM))
+                  .then(() => this.storage.remove(MPush.USUNM))
                   .then(() => this.doRegister(userValue, null))
                   .then(() => resolve())
                   .catch(err => reject(err));

@@ -9,7 +9,7 @@ export declare enum UserIdType {
     USUARIOAMA = 3,
     USUARIOCIS = 4
 }
-export declare class MPushService {
+export declare class MPush {
     private http;
     private device;
     private storage;
