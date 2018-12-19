@@ -73,7 +73,7 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
             _super.prototype.handleError.call(this, error);
         }
         if (this.platform.is('cordova') && !this.isIgnorableError(error)) {
-            this.sendError(error);
+            this.sendErrorAndDisplayError(error);
         }
     };
     CrashlyticsErrorHandler.prototype.getAndClearCrashDetected = function () {
@@ -101,31 +101,53 @@ var CrashlyticsErrorHandler = /** @class */ (function (_super) {
             });
         });
     };
-    CrashlyticsErrorHandler.prototype.sendError = function (error) {
-        var _this = this;
-        if (typeof fabric != 'undefined') {
-            if (error instanceof Error) {
-                StackTrace.fromError(error).then(function (frames) {
-                    if (_this.platform.is('android')) {
-                        fabric.Crashlytics.sendNonFatalCrash(error.message, frames);
-                    }
-                    else {
-                        var baseHref = window.location.href.replace('www/index.html', '');
-                        var report = '';
-                        for (var _i = 0, frames_1 = frames; _i < frames_1.length; _i++) {
-                            var frame = frames_1[_i];
-                            report += frame.functionName + "(" + frame.fileName.replace(baseHref, '') + ":" + frame.lineNumber + ")\n";
+    CrashlyticsErrorHandler.prototype.sendSilentError = function (error) {
+        return __awaiter(this, void 0, void 0, function () {
+            var frames_2, baseHref, report, _i, frames_1, frame;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(typeof fabric != 'undefined')) return [3 /*break*/, 3];
+                        if (!(error instanceof Error)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, StackTrace.fromError(error).catch(function (reason) { return _this.log.e('Crashlytics catch: ' + reason); })];
+                    case 1:
+                        frames_2 = _a.sent();
+                        if (frames_2) {
+                            if (this.platform.is('android')) {
+                                fabric.Crashlytics.sendNonFatalCrash(error.message, frames_2);
+                            }
+                            else {
+                                baseHref = window.location.href.replace('www/index.html', '');
+                                report = '';
+                                for (_i = 0, frames_1 = frames_2; _i < frames_1.length; _i++) {
+                                    frame = frames_1[_i];
+                                    report += frame.functionName + "(" + frame.fileName.replace(baseHref, '') + ":" + frame.lineNumber + ")\n";
+                                }
+                                fabric.Crashlytics.sendNonFatalCrash(error.name + ": " + error.message + "\n\n" + report);
+                            }
                         }
-                        fabric.Crashlytics.sendNonFatalCrash(error.name + ": " + error.message + "\n\n" + report);
-                    }
-                    _this.displayErrorMsgAndReload();
-                }).catch(function (reason) { return _this.log.e('Crashlytics catch: ' + reason); });
-            }
-            else {
-                fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error));
-                this.displayErrorMsgAndReload();
-            }
-        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error));
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CrashlyticsErrorHandler.prototype.sendErrorAndDisplayError = function (error) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.sendSilentError(error)];
+                    case 1:
+                        _a.sent();
+                        this.displayErrorMsgAndReload();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     CrashlyticsErrorHandler.prototype.displayErrorMsgAndReload = function () {
         var _this = this;
