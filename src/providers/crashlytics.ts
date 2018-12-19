@@ -34,7 +34,7 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
       super.handleError(error);
     }
     if (this.platform.is('cordova') && !this.isIgnorableError(error)) {
-      this.sendErrorAndDisplayError(error);
+      this.sendError(error);
     }
   }
 
@@ -49,11 +49,10 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
     return false;
   }
 
-  async sendSilentError(error: any) {
+  private sendError(error: any) {
     if (typeof fabric != 'undefined') {
       if (error instanceof Error) {
-        const frames = await StackTrace.fromError(error).catch(reason => this.log.e('Crashlytics catch: ' + reason));
-        if (frames) {
+        StackTrace.fromError(error).then(frames => {
           if (this.platform.is('android')) {
             fabric.Crashlytics.sendNonFatalCrash(error.message, frames);
           } else {
@@ -64,16 +63,13 @@ export class CrashlyticsErrorHandler extends IonicErrorHandler {
             }
             fabric.Crashlytics.sendNonFatalCrash(`${error.name}: ${error.message}\n\n${report}`);
           }
-        }
+          this.displayErrorMsgAndReload();
+        }).catch(reason => this.log.e('Crashlytics catch: ' + reason));
       } else {
         fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error));
+        this.displayErrorMsgAndReload();
       }
     }
-  }
-
-  private async sendErrorAndDisplayError(error: any) {
-    await this.sendSilentError(error);
-    this.displayErrorMsgAndReload();
   }
 
   private displayErrorMsgAndReload() {

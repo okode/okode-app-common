@@ -16,8 +16,7 @@ export declare class CrashlyticsErrorHandler extends IonicErrorHandler {
     constructor(platform: Platform, splashScreen: SplashScreen, log: Log, storage: Storage, alertCtrl: AlertController);
     handleError(error: any): void;
     getAndClearCrashDetected(): Promise<boolean>;
-    sendSilentError(error: any): Promise<void>;
-    private sendErrorAndDisplayError;
+    private sendError;
     private displayErrorMsgAndReload;
     private restartApp;
     private isIgnorableError;
