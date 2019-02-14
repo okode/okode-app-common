@@ -1,6 +1,7 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { MMobile } from './mmobile';
 import { Logger } from './logger';
+import safeJsonStringify from 'safe-json-stringify';
 
 @Injectable()
 export class Log implements Logger {
@@ -51,7 +52,13 @@ export class Log implements Logger {
   }
 
   private print(tag: string, message?: any, ...optionalParams: any[]) {
-    let log = `${tag}${this.getUser()}: ${message} ${optionalParams.join(' ')}`;
+    let parsedMessage = '';
+    if (typeof message === 'string') {
+      parsedMessage = message;
+    } else {
+      parsedMessage = safeJsonStringify(message);
+    }
+    let log = `${tag}${this.getUser()}: ${parsedMessage} ${optionalParams.join(' ')}`;
     switch (tag) {
       case Log.ERROR_TAG:
         console.error(log);
