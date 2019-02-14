@@ -39,6 +39,7 @@
     "cordova-fabric-plugin": "^1.1.14-dev",
     "ionic-angular": "^3.9.2",
     "rxjs": "^5.4.0",
+    "safe-json-stringify": "^1.2.0",
     "@types/node": "^6.0.60",
     "zone.js": "^0.8.4",
     "typescript": "^2.3.4"
