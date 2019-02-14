@@ -56,7 +56,11 @@ export class Log implements Logger {
     if (typeof message === 'string') {
       parsedMessage = message;
     } else {
-      parsedMessage = safeJsonStringify(message);
+      try {
+        parsedMessage = safeJsonStringify(message);
+      } catch (stringifyError) {
+        console.log('Error parsing log message: ', stringifyError);
+      }
     }
     let log = `${tag}${this.getUser()}: ${parsedMessage} ${optionalParams.join(' ')}`;
     switch (tag) {
