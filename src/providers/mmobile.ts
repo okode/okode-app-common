@@ -5,7 +5,6 @@ import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
 import { Logger } from './logger';
 import 'rxjs/add/operator/toPromise';
-import safeJsonStringify from 'safe-json-stringify';
 
 @Injectable()
 export class MMobile {
@@ -314,13 +313,13 @@ export class MMobile {
             this.printLog(`Logs file for today already exists: `, this.getLogsFileName());
           })
           .catch(checkFileErr => {
-            this.printLog(`Failed to check logs file. Reason: ${safeJsonStringify(checkFileErr)}`);
+            this.printLog(`Failed to check logs file. Reason: ${JSON.stringify(checkFileErr)}`);
             this.file.removeRecursively(this.file.dataDirectory, MMobile.LOGS_DIR)
               .then(() => {
                 this.prepareLogs();
               })
               .catch(removeRecursivelyErr => {
-                this.printLog(`Failed to remove logs files and directory recursively. Reason: ${safeJsonStringify(removeRecursivelyErr)}`);
+                this.printLog(`Failed to remove logs files and directory recursively. Reason: ${JSON.stringify(removeRecursivelyErr)}`);
               });
           });
       })
@@ -329,7 +328,7 @@ export class MMobile {
           this.printLog(`Cordova not enabled. Discarding it. Reason: ${JSON.stringify(err)}`);
           return;
         }
-        this.printLog(`Failed to check logs directory. Reason: ${safeJsonStringify(err)}`);
+        this.printLog(`Failed to check logs directory. Reason: ${JSON.stringify(err)}`);
         this.file.createDir(this.file.dataDirectory, MMobile.LOGS_DIR, false)
           .then(() => {
             this.file.createFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), true)
@@ -337,11 +336,11 @@ export class MMobile {
                 this.printLog(`Success creating logs file`);
               })
               .catch(createFileErr => {
-                this.printLog(`Failed to create logs directory. Reason: ${safeJsonStringify(createFileErr)}`);
+                this.printLog(`Failed to create logs directory. Reason: ${JSON.stringify(createFileErr)}`);
               });
           })
           .catch(createDirErr => {
-            this.printLog(`Failed to create logs directory. Reason: ${safeJsonStringify(createDirErr)}`);
+            this.printLog(`Failed to create logs directory. Reason: ${JSON.stringify(createDirErr)}`);
           });
       });
   }

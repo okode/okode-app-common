@@ -39,7 +39,6 @@ import { File } from '@ionic-native/file';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
-import { safeJsonStringify } from 'safe-json-stringify';
 var MMobile = /** @class */ (function () {
     function MMobile(http, file, device, storage) {
         this.http = http;
@@ -314,13 +313,13 @@ var MMobile = /** @class */ (function () {
                 _this.printLog("Logs file for today already exists: ", _this.getLogsFileName());
             })
                 .catch(function (checkFileErr) {
-                _this.printLog("Failed to check logs file. Reason: " + safeJsonStringify(checkFileErr));
+                _this.printLog("Failed to check logs file. Reason: " + JSON.stringify(checkFileErr));
                 _this.file.removeRecursively(_this.file.dataDirectory, MMobile.LOGS_DIR)
                     .then(function () {
                     _this.prepareLogs();
                 })
                     .catch(function (removeRecursivelyErr) {
-                    _this.printLog("Failed to remove logs files and directory recursively. Reason: " + safeJsonStringify(checkFileErr));
+                    _this.printLog("Failed to remove logs files and directory recursively. Reason: " + JSON.stringify(removeRecursivelyErr));
                 });
             });
         })
@@ -329,7 +328,7 @@ var MMobile = /** @class */ (function () {
                 _this.printLog("Cordova not enabled. Discarding it. Reason: " + JSON.stringify(err));
                 return;
             }
-            _this.printLog("Failed to check logs directory. Reason: " + safeJsonStringify(err));
+            _this.printLog("Failed to check logs directory. Reason: " + JSON.stringify(err));
             _this.file.createDir(_this.file.dataDirectory, MMobile.LOGS_DIR, false)
                 .then(function () {
                 _this.file.createFile("" + _this.file.dataDirectory + MMobile.LOGS_DIR + "/", _this.getLogsFileName(), true)
@@ -337,11 +336,11 @@ var MMobile = /** @class */ (function () {
                     _this.printLog("Success creating logs file");
                 })
                     .catch(function (createFileErr) {
-                    _this.printLog("Failed to create logs directory. Reason: " + safeJsonStringify(createFileErr));
+                    _this.printLog("Failed to create logs directory. Reason: " + JSON.stringify(createFileErr));
                 });
             })
                 .catch(function (createDirErr) {
-                _this.printLog("Failed to create logs directory. Reason: " + safeJsonStringify(createDirErr));
+                _this.printLog("Failed to create logs directory. Reason: " + JSON.stringify(createDirErr));
             });
         });
     };

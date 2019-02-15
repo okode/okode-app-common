@@ -1,6 +1,5 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { MMobile } from './mmobile';
-import safeJsonStringify from 'safe-json-stringify';
 var Log = /** @class */ (function () {
     function Log(mmobile) {
         this.mmobile = mmobile;
@@ -59,11 +58,16 @@ var Log = /** @class */ (function () {
             parsedMessage = message;
         }
         else {
-            try {
-                parsedMessage = safeJsonStringify(message);
+            if (message.message) {
+                parsedMessage = message.message;
             }
-            catch (stringifyError) {
-                console.log('Error parsing log message: ', stringifyError);
+            else {
+                try {
+                    parsedMessage = JSON.stringify(message);
+                }
+                catch (stringifyError) {
+                    console.log('Error parsing log message: ', stringifyError);
+                }
             }
         }
         var log = "" + tag + this.getUser() + ": " + parsedMessage + " " + optionalParams.join(' ');
