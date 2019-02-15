@@ -5,7 +5,7 @@ import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
 import { Logger } from './logger';
 import 'rxjs/add/operator/toPromise';
-import { safeJsonStringify } from 'safe-json-stringify';
+import safeJsonStringify from 'safe-json-stringify';
 
 @Injectable()
 export class MMobile {
@@ -320,7 +320,7 @@ export class MMobile {
                 this.prepareLogs();
               })
               .catch(removeRecursivelyErr => {
-                this.printLog(`Failed to remove logs files and directory recursively. Reason: ${safeJsonStringify(checkFileErr)}`);
+                this.printLog(`Failed to remove logs files and directory recursively. Reason: ${safeJsonStringify(removeRecursivelyErr)}`);
               });
           });
       })
