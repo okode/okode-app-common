@@ -311,8 +311,8 @@ var MMobile = /** @class */ (function () {
                 .then(function () {
                 // Logs file exists for today, nothing to do
             })
-                .catch(function (_) {
-                _this.printLog("Logs file does not exist");
+                .catch(function (checkFileErr) {
+                _this.printLog("Failed to check logs file. Reason: " + JSON.stringify(checkFileErr));
                 _this.file.removeRecursively(_this.file.dataDirectory, MMobile.LOGS_DIR)
                     .then(function () {
                     _this.prepareLogs();

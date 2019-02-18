@@ -311,8 +311,8 @@ export class MMobile {
           .then(() => {
             // Logs file exists for today, nothing to do
           })
-          .catch(_ => {
-            this.printLog(`Logs file does not exist`);
+          .catch(checkFileErr => {
+            this.printLog(`Failed to check logs file. Reason: ${JSON.stringify(checkFileErr)}`);
             this.file.removeRecursively(this.file.dataDirectory, MMobile.LOGS_DIR)
               .then(() => {
                 this.prepareLogs();
