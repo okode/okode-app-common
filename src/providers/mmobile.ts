@@ -32,7 +32,7 @@ export class MMobile {
     private file: File,
     private device: Device,
     private storage: Storage
-  )  {}
+  ) { }
 
   init(baseUrl: string, appName: string, version: string, jwtConfigName?: string, timeout?: number) {
     return new Promise<boolean>((resolve, reject) => {
@@ -75,27 +75,27 @@ export class MMobile {
                 resolve(false);
               } else {
                 this.http.get(MMobile.INITIAL_CONFIG_PATH).toPromise()
-                .then(result => {
-                  this.config = result;
-                  this.storage.ready()
-                    .then(() => {
-                      return this.storage.get(MMobile.LAST_UPDATED_KEY);
-                    })
-                    .then(lastUpdatedDate => {
-                      if (lastUpdatedDate == null) {
-                        return this.storage.set(MMobile.LAST_UPDATED_KEY, new Date());
-                      } else {
-                        return Promise.resolve();
-                      }
-                    })
-                    .then(() => {
-                      resolve(false);
-                    });
-                })
-                .catch((error: any) => {
-                  this.printLog(`Error loading MMobile initial config. Reason: ${JSON.stringify(error)}`);
-                  reject();
-                });
+                  .then(result => {
+                    this.config = result;
+                    this.storage.ready()
+                      .then(() => {
+                        return this.storage.get(MMobile.LAST_UPDATED_KEY);
+                      })
+                      .then(lastUpdatedDate => {
+                        if (lastUpdatedDate == null) {
+                          return this.storage.set(MMobile.LAST_UPDATED_KEY, new Date());
+                        } else {
+                          return Promise.resolve();
+                        }
+                      })
+                      .then(() => {
+                        resolve(false);
+                      });
+                  })
+                  .catch((error: any) => {
+                    this.printLog(`Error loading MMobile initial config. Reason: ${JSON.stringify(error)}`);
+                    reject();
+                  });
               }
             });
         });
@@ -186,22 +186,22 @@ export class MMobile {
 
     return new Promise<Date>((resolve, reject) => {
       this.storage.ready()
-      .then(() => {
-        return this.storage.get(MMobile.LAST_UPDATED_KEY);
-      })
-      .then(date => {
-        resolve (new Date(date));
-      })
-      .catch(error => {
-        reject(error);
-      });
+        .then(() => {
+          return this.storage.get(MMobile.LAST_UPDATED_KEY);
+        })
+        .then(date => {
+          resolve(new Date(date));
+        })
+        .catch(error => {
+          reject(error);
+        });
     });
   }
 
   async writeLog(log: string) {
     let message = `>>>>>>> ${this.getFormattedDateWithHour()}: ${log}` + '\n';
     this.logsQueue.push(message);
-    
+
     if (!this.isProcessingLogs) {
       this.processLogs();
     }
@@ -216,7 +216,7 @@ export class MMobile {
     this.isProcessingLogs = true;
     let m = this.logsQueue.shift();
 
-    this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), m, {append: true})
+    this.file.writeFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), m, { append: true })
       .then(() => this.processLogs())
       .catch(err => {
         this.printLog(`Error writing log to file. Discarding it. Reason: ${JSON.stringify(err)}`);
@@ -229,24 +229,24 @@ export class MMobile {
     return new Promise<boolean>((resolve, reject) => {
       if (this.isLogsEnabled()) {
         this.file.readAsText(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName())
-        .then(log => {
-          let logsUrl = `${this.baseUrl}/services/public/${this.appName}/${this.version}/${MMobile.LOGS_SERVICE_KEY}`;
-          let body = {
-            'rawlog': btoa(unescape(encodeURIComponent(log))),
-            'deviceId': deviceName
-          };
-          let headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded'
+          .then(log => {
+            let logsUrl = `${this.baseUrl}/services/public/${this.appName}/${this.version}/${MMobile.LOGS_SERVICE_KEY}`;
+            let body = {
+              'rawlog': btoa(unescape(encodeURIComponent(log))),
+              'deviceId': deviceName
+            };
+            let headers = new HttpHeaders({
+              'Content-Type': 'application/x-www-form-urlencoded'
+            });
+            return this.http.post(logsUrl, this.jsonToURLEncoded(body), { headers: headers, responseType: 'text' }).toPromise();
+          })
+          .then(result => {
+            resolve(true);
+          })
+          .catch(error => {
+            this.writeLog(`Error sending MMobile logs. Reason: ${JSON.stringify(error)}`);
+            resolve(false);
           });
-          return this.http.post(logsUrl, this.jsonToURLEncoded(body), { headers: headers, responseType: 'text' }).toPromise();
-        })
-        .then(result => {
-          resolve(true);
-        })
-        .catch(error => {
-          this.writeLog(`Error sending MMobile logs. Reason: ${JSON.stringify(error)}`);
-          resolve(false);
-        });
       } else {
         this.writeLog('Logs service is not enabled');
         resolve(false);
@@ -257,8 +257,8 @@ export class MMobile {
   isLogsEnabled() {
     this.checkIfIsInitialized();
     return (this.config.services !== null
-            && this.config.services[MMobile.LOGS_SERVICE_KEY] !== null
-            && this.config.services[MMobile.LOGS_SERVICE_KEY] !== null);
+      && this.config.services[MMobile.LOGS_SERVICE_KEY] !== null
+      && this.config.services[MMobile.LOGS_SERVICE_KEY] !== null);
   }
 
   getServiceUrl(key: string) {
@@ -307,41 +307,31 @@ export class MMobile {
     this.file.checkDir(this.file.dataDirectory, MMobile.LOGS_DIR)
       .then(() => {
         // Logs directory exists. Check if the file is created for today
-         this.file.checkFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName())
+        this.file.checkFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName())
           .then(() => {
             // Logs file exists for today, nothing to do
-            this.printLog(`Logs file for today already exists: `, this.getLogsFileName());
           })
-          .catch(checkFileErr => {
-            this.printLog(`Failed to check logs file. Reason: ${JSON.stringify(checkFileErr)}`);
+          .catch(_ => {
+            this.printLog(`Logs file does not exist`);
             this.file.removeRecursively(this.file.dataDirectory, MMobile.LOGS_DIR)
               .then(() => {
                 this.prepareLogs();
               })
-              .catch(removeRecursivelyErr => {
-                this.printLog(`Failed to remove logs files and directory recursively. Reason: ${JSON.stringify(removeRecursivelyErr)}`);
-              });
+              .catch(_ => { });
           });
       })
       .catch(err => {
         if (err == 'cordova_not_available') {
-          this.printLog(`Cordova not enabled. Discarding it. Reason: ${JSON.stringify(err)}`);
+          this.printLog(`Cordova not enabled. Discarding it.`);
           return;
         }
-        this.printLog(`Failed to check logs directory. Reason: ${JSON.stringify(err)}`);
         this.file.createDir(this.file.dataDirectory, MMobile.LOGS_DIR, false)
           .then(() => {
             this.file.createFile(`${this.file.dataDirectory}${MMobile.LOGS_DIR}/`, this.getLogsFileName(), true)
-              .then(() => {
-                this.printLog(`Success creating logs file`);
-              })
-              .catch(createFileErr => {
-                this.printLog(`Failed to create logs directory. Reason: ${JSON.stringify(createFileErr)}`);
-              });
+              .then(() => { })
+              .catch(_ => { });
           })
-          .catch(createDirErr => {
-            this.printLog(`Failed to create logs directory. Reason: ${JSON.stringify(createDirErr)}`);
-          });
+          .catch(_ => { });
       });
   }
 
@@ -372,7 +362,7 @@ export class MMobile {
 
   private checkIfIsInitialized() {
     if (this.config == null) {
-      throw({ message: 'MMobile is not initialized', needsRestartApp: true });
+      throw ({ message: 'MMobile is not initialized', needsRestartApp: true });
     }
   }
 

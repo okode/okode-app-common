@@ -310,38 +310,28 @@ var MMobile = /** @class */ (function () {
             _this.file.checkFile("" + _this.file.dataDirectory + MMobile.LOGS_DIR + "/", _this.getLogsFileName())
                 .then(function () {
                 // Logs file exists for today, nothing to do
-                _this.printLog("Logs file for today already exists: ", _this.getLogsFileName());
             })
-                .catch(function (checkFileErr) {
-                _this.printLog("Failed to check logs file. Reason: " + JSON.stringify(checkFileErr));
+                .catch(function (_) {
+                _this.printLog("Logs file does not exist");
                 _this.file.removeRecursively(_this.file.dataDirectory, MMobile.LOGS_DIR)
                     .then(function () {
                     _this.prepareLogs();
                 })
-                    .catch(function (removeRecursivelyErr) {
-                    _this.printLog("Failed to remove logs files and directory recursively. Reason: " + JSON.stringify(removeRecursivelyErr));
-                });
+                    .catch(function (_) { });
             });
         })
             .catch(function (err) {
             if (err == 'cordova_not_available') {
-                _this.printLog("Cordova not enabled. Discarding it. Reason: " + JSON.stringify(err));
+                _this.printLog("Cordova not enabled. Discarding it.");
                 return;
             }
-            _this.printLog("Failed to check logs directory. Reason: " + JSON.stringify(err));
             _this.file.createDir(_this.file.dataDirectory, MMobile.LOGS_DIR, false)
                 .then(function () {
                 _this.file.createFile("" + _this.file.dataDirectory + MMobile.LOGS_DIR + "/", _this.getLogsFileName(), true)
-                    .then(function () {
-                    _this.printLog("Success creating logs file");
-                })
-                    .catch(function (createFileErr) {
-                    _this.printLog("Failed to create logs directory. Reason: " + JSON.stringify(createFileErr));
-                });
+                    .then(function () { })
+                    .catch(function (_) { });
             })
-                .catch(function (createDirErr) {
-                _this.printLog("Failed to create logs directory. Reason: " + JSON.stringify(createDirErr));
-            });
+                .catch(function (_) { });
         });
     };
     MMobile.prototype.getFormattedDateWithHour = function () {
