@@ -311,22 +311,27 @@ var MMobile = /** @class */ (function () {
                 .then(function () {
                 // Logs file exists for today, nothing to do
             })
-                .catch(function (err) {
+                .catch(function (checkFileErr) {
+                _this.printLog("Failed to check logs file. Reason: " + JSON.stringify(checkFileErr));
                 _this.file.removeRecursively(_this.file.dataDirectory, MMobile.LOGS_DIR)
                     .then(function () {
                     _this.prepareLogs();
-                });
+                })
+                    .catch(function (_) { });
             });
         })
             .catch(function (err) {
             if (err == 'cordova_not_available') {
-                _this.printLog("Cordova not enabled. Discarding it. Reason: " + JSON.stringify(err));
+                _this.printLog("Cordova not enabled. Discarding it.");
                 return;
             }
             _this.file.createDir(_this.file.dataDirectory, MMobile.LOGS_DIR, false)
                 .then(function () {
-                _this.file.createFile("" + _this.file.dataDirectory + MMobile.LOGS_DIR + "/", _this.getLogsFileName(), true);
-            });
+                _this.file.createFile("" + _this.file.dataDirectory + MMobile.LOGS_DIR + "/", _this.getLogsFileName(), true)
+                    .then(function () { })
+                    .catch(function (_) { });
+            })
+                .catch(function (_) { });
         });
     };
     MMobile.prototype.getFormattedDateWithHour = function () {

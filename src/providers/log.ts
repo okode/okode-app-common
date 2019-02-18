@@ -51,7 +51,21 @@ export class Log implements Logger {
   }
 
   private print(tag: string, message?: any, ...optionalParams: any[]) {
-    let log = `${tag}${this.getUser()}: ${message} ${optionalParams.join(' ')}`;
+    let parsedMessage = '';
+    if (typeof message === 'string') {
+      parsedMessage = message;
+    } else {
+      if (message.message) {
+        parsedMessage = message.message;
+      } else {
+        try {
+          parsedMessage = JSON.stringify(message);
+        } catch (stringifyError) {
+          console.log('Error parsing log message: ', stringifyError);
+        }
+      }
+    }
+    let log = `${tag}${this.getUser()}: ${parsedMessage} ${optionalParams.join(' ')}`;
     switch (tag) {
       case Log.ERROR_TAG:
         console.error(log);
