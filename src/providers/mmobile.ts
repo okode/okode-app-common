@@ -45,7 +45,10 @@ export class MMobile {
       this.prepareLogs();
 
       let url = `${baseUrl}/config/${appName}/${version}`;
-      let observable = this.http.get(url);
+      let headers = new HttpHeaders();
+      headers = headers.append('Cache-Interceptor', 'clear-cache');
+      headers = headers.append('Content-Type', 'application/json');
+      let observable = this.http.get(url, { headers: headers });
       if (timeout) {
         observable = observable.timeout(timeout);
       }
