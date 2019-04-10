@@ -58,7 +58,10 @@ var MMobile = /** @class */ (function () {
             _this.timeout = timeout;
             _this.prepareLogs();
             var url = baseUrl + "/config/" + appName + "/" + version;
-            var observable = _this.http.get(url);
+            var headers = new HttpHeaders();
+            headers = headers.append('Cache-Interceptor', 'clear-cache');
+            headers = headers.append('Content-Type', 'application/json');
+            var observable = _this.http.get(url, { headers: headers });
             if (timeout) {
                 observable = observable.timeout(timeout);
             }
