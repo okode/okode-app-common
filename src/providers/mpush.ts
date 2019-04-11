@@ -136,7 +136,7 @@ export class MPush {
               this.log.e(`[MPUSH] Error registering user in MPush. Reason: ${this.safeStringify(err)}`);
               let response = err.json ? err.json() : err.error;
               let unknownUsunm = 8;
-              if (response.code && response.code == unknownUsunm) {
+              if (response && response.code && response.code == unknownUsunm) {
                 this.log.w('[MPUSH] Usunm not registered in mpush and trying to obtain new one');
                 this.storage.ready()
                   .then(() => this.storage.remove(MPush.USUNM))
