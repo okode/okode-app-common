@@ -125,7 +125,7 @@ var MPush = /** @class */ (function () {
                     _this.log.e("[MPUSH] Error registering user in MPush. Reason: " + _this.safeStringify(err));
                     var response = err.json ? err.json() : err.error;
                     var unknownUsunm = 8;
-                    if (response.code && response.code == unknownUsunm) {
+                    if (response && response.code && response.code == unknownUsunm) {
                         _this.log.w('[MPUSH] Usunm not registered in mpush and trying to obtain new one');
                         _this.storage.ready()
                             .then(function () { return _this.storage.remove(MPush.USUNM); })
