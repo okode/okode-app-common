@@ -22,12 +22,16 @@ export class HttpCacheInterceptor implements HttpInterceptor {
     let headerValue = req.headers.get(HttpCacheInterceptor.HEADER_NAME);
     req = req.clone({ headers: req.headers.delete(HttpCacheInterceptor.HEADER_NAME) });
 
-    if (req.method !== 'GET' || !headerValue) {
+    if (!headerValue) {
       return next.handle(req);
     }
 
     if (headerValue == HttpCacheInterceptor.HEADER_VALUE_CACHE_CLEAR) {
       this.cache.clear();
+      return next.handle(req);
+    }
+
+    if (req.method !== 'GET') {
       return next.handle(req);
     }
 
