@@ -57,7 +57,7 @@ var MMobile = /** @class */ (function () {
             _this.jwtConfigName = jwtConfigName;
             _this.timeout = timeout;
             _this.prepareLogs();
-            var url = baseUrl + "/config/" + appName + "/" + version;
+            var url = baseUrl + "/config/" + appName + "/" + version + "?ts=" + new Date().getMilliseconds();
             var observable = _this.http.get(url);
             if (timeout) {
                 observable = observable.timeout(timeout);
