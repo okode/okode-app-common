@@ -44,7 +44,7 @@ export class MMobile {
 
       this.prepareLogs();
 
-      let url = `${baseUrl}/config/${appName}/${version}`;
+      let url = `${baseUrl}/config/${appName}/${version}?ts=${new Date().getMilliseconds()}`;
       let observable = this.http.get(url);
       if (timeout) {
         observable = observable.timeout(timeout);
